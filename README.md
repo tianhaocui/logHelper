@@ -17,4 +17,4 @@ printResult    是否打印返回值
 
 使用需要添加包扫描路径
 
-<img width="781" alt="image" src="https://user-images.githubusercontent.com/54015884/185789938-027780f2-74ad-4dd7-bc78-2fe0ae38e0b6.png">
+<img width="822" alt="image" src="https://user-images.githubusercontent.com/54015884/185790993-62757195-4341-4116-8200-efac5dd23fb6.png">
