@@ -1,4 +1,4 @@
-package com.loghelper.annotation;
+package com.logHelper.annotation;
 
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -10,16 +10,18 @@ import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Method;
 import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.List;
 
+/**
+ * @author cuitianhao
+ */
 @Component
 @Aspect
 public class PrintLogHandler {
 
     private static final Logger logger = LoggerFactory.getLogger(PrintLogHandler.class);
 
-    @Around("@annotation(com.loghelper.annotation.PrintLog)")
+    @Around("@annotation(com.logHelper.annotation.PrintLog)")
     public Object printLog(ProceedingJoinPoint point) throws Throwable {
         MethodSignature msig = (MethodSignature) point.getSignature();
         Object result = null;

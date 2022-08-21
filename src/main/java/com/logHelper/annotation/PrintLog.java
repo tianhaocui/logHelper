@@ -1,4 +1,4 @@
-package com.loghelper.annotation;
+package com.logHelper.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -6,10 +6,10 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * @program: loghelper
+ * @program: logHelper
  * @description:
- * @packagename: com.loghelper.annotation
- * @author: cil
+ * @packagename: com.logHelper.annotation
+ * @author: cuitianhao
  * @date: 2022/08/21 16:03
  **/
 @Target({ElementType.PARAMETER, ElementType.METHOD})

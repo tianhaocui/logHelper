@@ -1,9 +1,7 @@
-package com.loghelper.loghelper;
+package com.logHelper.loghelper;
 
 
-import com.loghelper.annotation.PrintLog;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import com.logHelper.annotation.PrintLog;
 
 import java.util.Arrays;
 import java.util.List;
