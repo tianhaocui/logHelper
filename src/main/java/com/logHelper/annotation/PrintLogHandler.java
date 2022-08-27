@@ -1,14 +1,15 @@
 package com.logHelper.annotation;
 
+import com.logHelper.util.HiddenBeanUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -17,9 +18,9 @@ import java.util.List;
  */
 @Component
 @Aspect
+@Slf4j
 public class PrintLogHandler {
 
-    private static final Logger logger = LoggerFactory.getLogger(PrintLogHandler.class);
 
     @Around("@annotation(com.logHelper.annotation.PrintLog)")
     public Object printLog(ProceedingJoinPoint point) throws Throwable {
@@ -32,7 +33,7 @@ public class PrintLogHandler {
             PrintLog printLog = currentMethod.getAnnotation(PrintLog.class);
             if (printLog != null) {
                 printParamLog(printLog, point);
-                printResultLog(printLog, point);
+                result = printResultLog(printLog, point);
             } else {
                 result = point.proceed();
             }
@@ -60,12 +61,16 @@ public class PrintLogHandler {
         //获取不需要打印的参数名
         String[] exception = printLog.exception();
         List<String> exceptionList = null;
+        List<Object> argList =  new ArrayList<>(Arrays.asList(args));
         if (exception.length > 0) {
             exceptionList = Arrays.asList(exception);
         }
-        for (int i = 0; i < argsName.length; i++) {
+
+        for (int i = 0,j=0; i < argsName.length; i++,j++) {
             if (exceptionList != null) {
                 if (exceptionList.contains(argsName[i])) {
+                    argList.remove(j);
+                    j--;
                     continue;
                 }
             }
@@ -74,7 +79,7 @@ public class PrintLogHandler {
                 sb.append(", ");
             }
         }
-        printLog(printLog, sb.toString(), args);
+        printLog(printLog, sb.toString(), argList.toArray());
 
     }
 
@@ -122,23 +127,27 @@ public class PrintLogHandler {
      * @param logContext
      */
     private void printLog(PrintLog printLog, String logContext, Object... objects) {
+        Object[] args = new Object[objects.length];
+        for (int i = 0; i < objects.length; i++) {
+            args[i] = HiddenBeanUtil.getClone(objects[i]);
+        }
         //打印级别
         switch (printLog.level()) {
             case TRACE:
-                logger.trace(logContext, objects);
+                log.trace(logContext, args);
                 break;
             case DEBUG:
-                logger.debug(logContext, objects);
+                log.debug(logContext, args);
                 break;
             case WARN:
-                logger.warn(logContext, objects);
+                log.warn(logContext, args);
                 break;
             case ERROR:
-                logger.error(logContext, objects);
+                log.error(logContext, args);
                 break;
             case INFO:
             default:
-                logger.info(logContext, objects);
+                log.info(logContext, args);
         }
     }
 }

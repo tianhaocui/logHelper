@@ -9,9 +9,9 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.logHelper</groupId>
-	<artifactId>loghelper</artifactId>
+	<artifactId>logHelper</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>loghelper</name>
+	<name>logHelper</name>
 	<description>Demo project for Spring Boot</description>
 	<properties>
 		<java.version>1.8</java.version>
@@ -31,5 +31,44 @@
 			<artifactId>junit</artifactId>
 			<scope>test</scope>
 		</dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.10</version>
+        </dependency>
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>fastjson</artifactId>
+            <version>1.2.58</version>
+        </dependency>
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<optional>true</optional>
+		</dependency>
 	</dependencies>
+	<build>
+	<plugins>
+		<!-- maven 打包集成插件 -->
+		<plugin>
+			<artifactId>maven-assembly-plugin</artifactId>
+			<executions>
+				<execution>
+					<!-- 绑定到package生命周期 -->
+					<phase>package</phase>
+					<goals>
+						<!-- 只运行一次 -->
+						<goal>single</goal>
+					</goals>
+				</execution>
+			</executions>
+			<configuration>
+				<descriptorRefs>
+					<!-- 将依赖一起打包到 JAR -->
+					<descriptorRef>jar-with-dependencies</descriptorRef>
+				</descriptorRefs>
+			</configuration>
+		</plugin>	</plugins>
+	</build>
+
 </project>
