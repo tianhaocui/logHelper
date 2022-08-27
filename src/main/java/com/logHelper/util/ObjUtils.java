@@ -34,33 +34,4 @@ public class ObjUtils {
         return fields;
     }
 
-    /**
-     * 深度克隆对象
-     *
-     */
-    @Deprecated
-    public static <T>T copy(T objSource) {
-
-        if (null == objSource) {
-            return null;
-        }
-        T clone = ObjectUtils.clone(objSource);
-//        Class<?> clazz = objSource.getClass();
-//        Object objDes = clazz.newInstance();
-//        Field[] fields = getAllFields(objSource);
-//        // 循环
-//        for (Field field : fields) {
-//            field.setAccessible(true);
-//            if (field.getModifiers() >= 24) {
-//                continue;
-//            }
-//            try {
-//                // 设置字段可见，即可用get方法获取属性值。
-//                field.set(objDes, field.get(objSource));
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
-//        }
-        return clone;
-    }
 }

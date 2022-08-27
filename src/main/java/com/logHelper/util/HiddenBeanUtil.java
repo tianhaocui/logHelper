@@ -20,7 +20,7 @@ public class HiddenBeanUtil {
 
 
     /**
-     * 获取脱敏json串(递归引用会导致java.lang.StackOverflowError)
+     * 获取脱敏后的bean
      *
      * @param javaBean
      * @return

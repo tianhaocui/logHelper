@@ -17,6 +17,7 @@ import java.lang.annotation.Target;
 public @interface Hidden {
 
     DataType dataType() default DataType.OTHER;
+    //todo 正则表达式的支持
 
     enum DataType{
         PHONE,EMAIL,ID_CARD,OTHER
