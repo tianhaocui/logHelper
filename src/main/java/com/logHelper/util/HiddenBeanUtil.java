@@ -10,10 +10,10 @@ import java.lang.reflect.Field;
 import java.util.*;
 
 /**
- * @program: loghelper
+ * @program: logHelper
  * @description:
  * @packagename: com.logHelper.util
- * @author: wulingren
+ * @author: cuitianhao
  * @date: 2022/08/27 16:33
  **/
 public class HiddenBeanUtil {
@@ -30,11 +30,14 @@ public class HiddenBeanUtil {
     /**
      * 账号脱敏
      */
-    private static final String ACCOUNT_REGEX = "(?<=\\w{1})\\w(?=\\w{1})";
+    private static final String ACCOUNT_REGEX = "(?<=\\w)\\w(?=\\w)";
     /**
      * 邮箱脱敏
      */
     private static final String EMAIL_REGEX = "(^\\w)[^@]*(@.*$)";
+
+    private static final String JAVAX = "javax.";
+    private static final String JAVA = "java.";
 
     /**
      * 获取脱敏后的bean
@@ -49,10 +52,10 @@ public class HiddenBeanUtil {
                 if (javaBean.getClass().isInterface()) {
                     return null;
                 }
-                if (StringUtils.startsWith(javaBean.getClass().getPackage().getName(), "javax.")
-                        || !StringUtils.startsWith(javaBean.getClass().getPackage().getName(), "java.")
-                        || !StringUtils.startsWith(javaBean.getClass().getName(), "javax.")
-                        || !StringUtils.startsWith(javaBean.getClass().getName(), "java.")) {
+                if (StringUtils.startsWith(javaBean.getClass().getPackage().getName(), JAVAX)
+                        || !StringUtils.startsWith(javaBean.getClass().getPackage().getName(), JAVA)
+                        || !StringUtils.startsWith(javaBean.getClass().getName(), JAVAX)
+                        || !StringUtils.startsWith(javaBean.getClass().getName(), JAVA)) {
                     clone = javaBean;
                 } else {
                     clone = (T) BeanUtils.instantiateClass(javaBean.getClass());
@@ -121,10 +124,10 @@ public class HiddenBeanUtil {
                         else {
                             if (!type.isPrimitive()
                                     && type.getPackage() != null
-                                    && !StringUtils.startsWith(type.getPackage().getName(), "javax.")
-                                    && !StringUtils.startsWith(type.getPackage().getName(), "java.")
-                                    && !StringUtils.startsWith(field.getType().getName(), "javax.")
-                                    && !StringUtils.startsWith(field.getName(), "java.")
+                                    && !StringUtils.startsWith(type.getPackage().getName(), JAVAX)
+                                    && !StringUtils.startsWith(type.getPackage().getName(), JAVA)
+                                    && !StringUtils.startsWith(field.getType().getName(), JAVAX)
+                                    && !StringUtils.startsWith(field.getName(), JAVA)
                                     && referenceCounter.add(value.hashCode())) {
                                 replace(ObjUtils.getAllFields(value), value, referenceCounter);
                             }
@@ -151,10 +154,10 @@ public class HiddenBeanUtil {
         return !clazz.isPrimitive()
                 && clazz.getPackage() != null
                 && !clazz.isEnum()
-                && !StringUtils.startsWith(clazz.getPackage().getName(), "javax.")
-                && !StringUtils.startsWith(clazz.getPackage().getName(), "java.")
-                && !StringUtils.startsWith(clazz.getName(), "javax.")
-                && !StringUtils.startsWith(clazz.getName(), "java.")
+                && !StringUtils.startsWith(clazz.getPackage().getName(), JAVAX)
+                && !StringUtils.startsWith(clazz.getPackage().getName(), JAVA)
+                && !StringUtils.startsWith(clazz.getName(), JAVAX)
+                && !StringUtils.startsWith(clazz.getName(), JAVA)
                 && referenceCounter.add(value.hashCode());
     }
 

@@ -4,10 +4,10 @@ import java.lang.reflect.Field;
 import java.util.*;
 
 /**
- * @program: loghelper
+ * @program: logHelper
  * @description:
  * @packagename: com.logHelper.util
- * @author: wulingren
+ * @author: cuitianhao
  * @date: 2022/08/27 16:33
  **/
 public class ObjUtils {

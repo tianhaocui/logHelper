@@ -1,5 +1,6 @@
-package com.logHelper.annotation;
+package com.logHelper.aop;
 
+import com.logHelper.annotation.PrintLog;
 import com.logHelper.util.HiddenBeanUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -20,8 +21,6 @@ import java.util.List;
 @Aspect
 @Slf4j
 public class PrintLogHandler {
-
-
     @Around("@annotation(com.logHelper.annotation.PrintLog)")
     public Object printLog(ProceedingJoinPoint point) throws Throwable {
         MethodSignature msig = (MethodSignature) point.getSignature();
@@ -113,7 +112,7 @@ public class PrintLogHandler {
         MethodSignature methodSignature = (MethodSignature) point.getSignature();
 
         getMethodMessage(sb, printLog, methodSignature);
-        sb.append("result: {},").append("use.time: {}ms");
+        sb.append("result: {},  ").append("use.time: {}ms");
         //耗时
         long cost = System.currentTimeMillis() - startTime;
         printLog(printLog, sb.toString(), proceed, cost);
