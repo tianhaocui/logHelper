@@ -18,6 +18,23 @@ import java.util.*;
  **/
 public class HiddenBeanUtil {
 
+    /**
+     * 前三后四
+     */
+    private static final String PHONE_REGEX = "(?<=\\w{3})\\w(?=\\w{4})";
+    /**
+     * 前er后二
+     */
+    private static final String ID_CORD_REGEX = "(?<=\\w{2})\\w(?=\\w{2})";
+
+    /**
+     * 账号脱敏
+     */
+    private static final String ACCOUNT_REGEX = "(?<=\\w{1})\\w(?=\\w{1})";
+    /**
+     * 邮箱脱敏
+     */
+    private static final String EMAIL_REGEX = "(^\\w)[^@]*(@.*$)";
 
     /**
      * 获取脱敏后的bean
@@ -25,8 +42,8 @@ public class HiddenBeanUtil {
      * @param javaBean
      * @return
      */
-    public static <T>T getClone(T javaBean) {
-        T clone  = null;
+    public static <T> T getClone(T javaBean) {
+        T clone = null;
         if (null != javaBean) {
             try {
                 if (javaBean.getClass().isInterface()) {
@@ -34,14 +51,14 @@ public class HiddenBeanUtil {
                 }
 
 
-                if (  StringUtils.startsWith(javaBean.getClass().getPackage().getName(), "javax.")
+                if (StringUtils.startsWith(javaBean.getClass().getPackage().getName(), "javax.")
                         || !StringUtils.startsWith(javaBean.getClass().getPackage().getName(), "java.")
                         || !StringUtils.startsWith(javaBean.getClass().getName(), "javax.")
-                        || !StringUtils.startsWith(javaBean.getClass().getName(), "java.")){
-                    clone =javaBean;
-                }else {
-                     clone = (T)BeanUtils.instantiateClass(javaBean.getClass());
-                    BeanUtils.copyProperties(javaBean,clone );
+                        || !StringUtils.startsWith(javaBean.getClass().getName(), "java.")) {
+                    clone = javaBean;
+                } else {
+                    clone = (T) BeanUtils.instantiateClass(javaBean.getClass());
+                    BeanUtils.copyProperties(javaBean, clone);
 
                 }
 
@@ -87,9 +104,7 @@ public class HiddenBeanUtil {
                             }
                         } else if (value instanceof Collection<?>) {
                             Collection<?> c = (Collection<?>) value;
-                            Iterator<?> it = c.iterator();
-                            while (it.hasNext()) {// TODO: 待优化
-                                Object collectionObj = it.next();
+                            for (Object collectionObj : c) {
                                 if (isNotGeneralType(collectionObj.getClass(), collectionObj, referenceCounter)) {
                                     replace(ObjUtils.getAllFields(collectionObj), collectionObj, referenceCounter);
                                 }
@@ -108,7 +123,7 @@ public class HiddenBeanUtil {
                             continue;
                         }
 
-                        /*除基础类型、jdk类型的字段之外，对其他类型的字段进行递归过滤*/
+                        //递归
                         else {
                             if (!type.isPrimitive()
                                     && type.getPackage() != null
@@ -131,7 +146,7 @@ public class HiddenBeanUtil {
     }
 
     /**
-     * 排除基础类型、jdk类型、枚举类型的字段
+     * 排除jdk字段
      *
      * @param clazz
      * @param value
@@ -151,7 +166,6 @@ public class HiddenBeanUtil {
 
     /**
      * 脱敏操作（按照规则转化需要脱敏的字段并设置新值）
-     * 目前只支持String类型的字段，如需要其他类型如BigDecimal、Date等类型，可以添加
      *
      * @param javaBean
      * @param field
@@ -166,7 +180,7 @@ public class HiddenBeanUtil {
             if (StringUtils.isNotBlank(valueStr)) {
                 switch (annotation.dataType()) {
                     case ID_CARD: {
-                        field.set(javaBean, idCardNum(valueStr));
+                        field.set(javaBean, idCard(valueStr));
                         break;
                     }
                     case EMAIL: {
@@ -174,8 +188,12 @@ public class HiddenBeanUtil {
                         break;
                     }
                     case PHONE:
-                    default:
                         field.set(javaBean, phone(valueStr));
+                    case ACCOUNT:
+                        field.set(javaBean, account(valueStr));
+                    case REG:
+                    default:
+                        field.set(javaBean, reg(valueStr, annotation.regexp()));
                 }
             }
         }
@@ -183,21 +201,20 @@ public class HiddenBeanUtil {
 
 
     /**
-     * 【身份证号】显示最后四位，其他隐藏。共计18位或者15位，比如：*************1234
+     * 身份证号
      *
      * @param id
      * @return
      */
-    public static String idCardNum(String id) {
+    public static String idCard(String id) {
         if (StringUtils.isBlank(id)) {
             return "";
         }
-        String num = StringUtils.right(id, 4);
-        return StringUtils.leftPad(num, StringUtils.length(id), "*");
+        return id.replaceAll(ID_CORD_REGEX, "*");
     }
 
     /**
-     * 【手机号码】前三位，后四位，其他隐藏，比如135****6810
+     * 手机号
      *
      * @param num
      * @return
@@ -206,26 +223,37 @@ public class HiddenBeanUtil {
         if (StringUtils.isBlank(num)) {
             return "";
         }
-        return StringUtils.left(num, 3).concat(StringUtils.removeStart(StringUtils.leftPad(StringUtils.right(num, 4), StringUtils.length(num), "*"), "***"));
+        return num.replaceAll(PHONE_REGEX, "*");
     }
 
     /**
-     * 【地址】只显示到地区，不显示详细地址，比如：北京市海淀区****
+     * 账号脱敏
      *
-     * @param address
-     * @param sensitiveSize 敏感信息长度
+     * @param account
      * @return
      */
-    public static String address(String address, int sensitiveSize) {
-        if (StringUtils.isBlank(address)) {
+    public static String account(String account) {
+        if (StringUtils.isBlank(account)) {
             return "";
         }
-        int length = StringUtils.length(address);
-        return StringUtils.rightPad(StringUtils.left(address, length - sensitiveSize), length, "*");
+        return account.replaceAll(ACCOUNT_REGEX, "*");
     }
 
     /**
-     * 【电子邮箱 邮箱前缀仅显示第一个字母，前缀其他隐藏，用星号代替，@及后面的地址显示，比如：d**@126.com>
+     * 自定义正则替换
+     *
+     * @param data
+     * @return
+     */
+    public static String reg(String data, String reg) {
+        if (StringUtils.isBlank(data)) {
+            return "";
+        }
+        return data.replaceAll(reg, "*");
+    }
+
+    /**
+     * 电子邮箱
      *
      * @param email
      * @return
@@ -238,11 +266,9 @@ public class HiddenBeanUtil {
         if (index <= 1) {
             return email;
         } else {
-            return StringUtils.rightPad(StringUtils.left(email, 1), index, "*").concat(StringUtils.mid(email, index, StringUtils.length(email)));
+            return email.replaceAll(EMAIL_REGEX, "*");
         }
     }
-
-
 }
 
 

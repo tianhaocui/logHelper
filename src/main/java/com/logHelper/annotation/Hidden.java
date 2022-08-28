@@ -16,10 +16,15 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Hidden {
 
-    DataType dataType() default DataType.OTHER;
-    //todo 正则表达式的支持
+    DataType dataType() default DataType.PHONE;
 
+    // 正则表达式的支持
+    String regexp() default "";
+
+    /**
+     * 数据类型
+     */
     enum DataType{
-        PHONE,EMAIL,ID_CARD,OTHER
+        PHONE,EMAIL,ID_CARD,REG,ACCOUNT;
     }
 }
