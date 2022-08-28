@@ -49,8 +49,6 @@ public class HiddenBeanUtil {
                 if (javaBean.getClass().isInterface()) {
                     return null;
                 }
-
-
                 if (StringUtils.startsWith(javaBean.getClass().getPackage().getName(), "javax.")
                         || !StringUtils.startsWith(javaBean.getClass().getPackage().getName(), "java.")
                         || !StringUtils.startsWith(javaBean.getClass().getName(), "javax.")
@@ -61,14 +59,10 @@ public class HiddenBeanUtil {
                     BeanUtils.copyProperties(javaBean, clone);
 
                 }
-
-                /* 定义一个计数器，用于避免重复循环自定义对象类型的字段 */
+                // 定义一个计数器，用于避免重复循环自定义对象类型的字段
                 Set<Integer> referenceCounter = new HashSet<Integer>();
-
-                /* 对克隆实体进行脱敏操作 */
+                //脱敏
                 replace(ObjUtils.getAllFields(clone), clone, referenceCounter);
-
-
             } catch (Throwable e) {
                 e.printStackTrace();
             }
@@ -189,8 +183,10 @@ public class HiddenBeanUtil {
                     }
                     case PHONE:
                         field.set(javaBean, phone(valueStr));
+                        break;
                     case ACCOUNT:
                         field.set(javaBean, account(valueStr));
+                        break;
                     case REG:
                     default:
                         field.set(javaBean, reg(valueStr, annotation.regexp()));
