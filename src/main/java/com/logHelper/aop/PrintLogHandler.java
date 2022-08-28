@@ -48,7 +48,7 @@ public class PrintLogHandler {
      * @param printLog
      * @param point
      */
-    private void printParamLog(PrintLog printLog, ProceedingJoinPoint point) {
+    private void printParamLog(PrintLog printLog, ProceedingJoinPoint point) throws IllegalAccessException {
         if (!printLog.printParameter()) {
             return;
         }
@@ -125,7 +125,7 @@ public class PrintLogHandler {
      * @param printLog
      * @param logContext
      */
-    private void printLog(PrintLog printLog, String logContext, Object... objects) {
+    private void printLog(PrintLog printLog, String logContext, Object... objects) throws IllegalAccessException {
         Object[] args = new Object[objects.length];
         for (int i = 0; i < objects.length; i++) {
             args[i] = HiddenBeanUtil.getClone(objects[i]);

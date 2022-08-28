@@ -45,30 +45,27 @@ public class HiddenBeanUtil {
      * @param javaBean
      * @return
      */
-    public static <T> T getClone(T javaBean) {
+    public static <T> T getClone(T javaBean) throws IllegalAccessException {
         T clone = null;
         if (null != javaBean) {
-            try {
-                if (javaBean.getClass().isInterface()) {
-                    return null;
-                }
-                if (StringUtils.startsWith(javaBean.getClass().getPackage().getName(), JAVAX)
-                        || !StringUtils.startsWith(javaBean.getClass().getPackage().getName(), JAVA)
-                        || !StringUtils.startsWith(javaBean.getClass().getName(), JAVAX)
-                        || !StringUtils.startsWith(javaBean.getClass().getName(), JAVA)) {
-                    clone = javaBean;
-                } else {
-                    clone = (T) BeanUtils.instantiateClass(javaBean.getClass());
-                    BeanUtils.copyProperties(javaBean, clone);
-
-                }
-                // 定义一个计数器，用于避免重复循环自定义对象类型的字段
-                Set<Integer> referenceCounter = new HashSet<Integer>();
-                //脱敏
-                replace(ObjUtils.getAllFields(clone), clone, referenceCounter);
-            } catch (Throwable e) {
-                e.printStackTrace();
+            if (javaBean.getClass().isInterface()) {
+                return null;
             }
+            if (StringUtils.startsWith(javaBean.getClass().getPackage().getName(), JAVAX)
+                    || !StringUtils.startsWith(javaBean.getClass().getPackage().getName(), JAVA)
+                    || !StringUtils.startsWith(javaBean.getClass().getName(), JAVAX)
+                    || !StringUtils.startsWith(javaBean.getClass().getName(), JAVA)) {
+                clone = javaBean;
+            } else {
+                clone = (T) BeanUtils.instantiateClass(javaBean.getClass());
+                BeanUtils.copyProperties(javaBean, clone);
+
+            }
+            // 定义一个计数器，用于避免重复循环自定义对象类型的字段
+            Set<Integer> referenceCounter = new HashSet<Integer>();
+            //脱敏
+            replace(ObjUtils.getAllFields(clone), clone, referenceCounter);
+
         }
         return clone;
     }
@@ -95,25 +92,31 @@ public class HiddenBeanUtil {
                             int len = Array.getLength(value);
                             for (int i = 0; i < len; i++) {
                                 Object arrayObject = Array.get(value, i);
-                                if (isNotGeneralType(arrayObject.getClass(), arrayObject, referenceCounter)) {
-                                    replace(ObjUtils.getAllFields(arrayObject), arrayObject, referenceCounter);
+                                if (arrayObject != null) {
+                                    if (isNotGeneralType(arrayObject.getClass(), arrayObject, referenceCounter)) {
+                                        replace(ObjUtils.getAllFields(arrayObject), arrayObject, referenceCounter);
+                                    }
                                 }
                             }
                         } else if (value instanceof Collection<?>) {
                             Collection<?> c = (Collection<?>) value;
                             for (Object collectionObj : c) {
-                                if (isNotGeneralType(collectionObj.getClass(), collectionObj, referenceCounter)) {
-                                    replace(ObjUtils.getAllFields(collectionObj), collectionObj, referenceCounter);
+                                if (collectionObj != null) {
+                                    if (isNotGeneralType(collectionObj.getClass(), collectionObj, referenceCounter)) {
+                                        replace(ObjUtils.getAllFields(collectionObj), collectionObj, referenceCounter);
+                                    }
                                 }
                             }
                         } else if (value instanceof Map<?, ?>) {
                             Map<?, ?> m = (Map<?, ?>) value;
                             Set<?> set = m.entrySet();
                             for (Object o : set) {
-                                Map.Entry<?, ?> entry = (Map.Entry<?, ?>) o;
-                                Object mapVal = entry.getValue();
-                                if (isNotGeneralType(mapVal.getClass(), mapVal, referenceCounter)) {
-                                    replace(ObjUtils.getAllFields(mapVal), mapVal, referenceCounter);
+                                if (o != null) {
+                                    Map.Entry<?, ?> entry = (Map.Entry<?, ?>) o;
+                                    Object mapVal = entry.getValue();
+                                    if (isNotGeneralType(mapVal.getClass(), mapVal, referenceCounter)) {
+                                        replace(ObjUtils.getAllFields(mapVal), mapVal, referenceCounter);
+                                    }
                                 }
                             }
                         } else if (value instanceof Enum<?>) {
@@ -265,7 +268,7 @@ public class HiddenBeanUtil {
         if (index <= 1) {
             return email;
         } else {
-            return email.replaceAll(EMAIL_REGEX, "*");
+            return email.replaceAll(EMAIL_REGEX, "$1****$2");
         }
     }
 }
