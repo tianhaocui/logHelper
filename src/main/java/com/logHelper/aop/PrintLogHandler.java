@@ -1,5 +1,6 @@
 package com.logHelper.aop;
 
+·import com.logHelper.annotation.Hidden;
 import com.logHelper.annotation.PrintLog;
 import com.logHelper.util.HiddenBeanUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -56,6 +57,7 @@ public class PrintLogHandler {
         StringBuilder sb = new StringBuilder();
         MethodSignature methodSignature = (MethodSignature) point.getSignature();
         getMethodMessage(sb, printLog, methodSignature);
+
         String[] argsName = methodSignature.getParameterNames();
         //获取不需要打印的参数名
         String[] exception = printLog.exception();
@@ -64,6 +66,7 @@ public class PrintLogHandler {
         if (exception.length > 0) {
             exceptionList = Arrays.asList(exception);
         }
+        Method method = methodSignature.getMethod();
 
         for (int i = 0,j=0; i < argsName.length; i++,j++) {
             if (exceptionList != null) {
@@ -74,6 +77,13 @@ public class PrintLogHandler {
                 }
             }
             sb.append(argsName[i]).append(": {}");
+            Hidden annotation = method.getParameters()[i].getAnnotation(Hidden.class);
+            if (annotation != null){
+                if (argList.get(i)!=null) {
+                    argList.set(i, HiddenBeanUtil.replace(argList.get(i).toString(), annotation.dataType(), annotation.regexp()));
+                }
+            }
+
             if (i < argsName.length - 1) {
                 sb.append(", ");
             }

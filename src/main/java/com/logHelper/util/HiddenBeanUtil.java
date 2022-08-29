@@ -51,6 +51,7 @@ public class HiddenBeanUtil {
             if (javaBean.getClass().isInterface()) {
                 return null;
             }
+            //系统类有好多没有无参构造方法
             if (StringUtils.startsWith(javaBean.getClass().getPackage().getName(), JAVAX)
                     || !StringUtils.startsWith(javaBean.getClass().getPackage().getName(), JAVA)
                     || !StringUtils.startsWith(javaBean.getClass().getName(), JAVAX)
@@ -59,7 +60,6 @@ public class HiddenBeanUtil {
             } else {
                 clone = (T) BeanUtils.instantiateClass(javaBean.getClass());
                 BeanUtils.copyProperties(javaBean, clone);
-
             }
             // 定义一个计数器，用于避免重复循环自定义对象类型的字段
             Set<Integer> referenceCounter = new HashSet<Integer>();
@@ -270,6 +270,25 @@ public class HiddenBeanUtil {
         } else {
             return email.replaceAll(EMAIL_REGEX, "$1****$2");
         }
+    }
+
+    public static String replace(String data, Hidden.DataType type, String reg){
+        switch (type) {
+            case ID_CARD: {
+               return idCard(data);
+            }
+            case EMAIL: {
+               return email(data);
+            }
+            case PHONE:
+               return phone(data);
+            case ACCOUNT:
+                return  account(data);
+            case REG:
+            default:
+                return reg(data, reg);
+        }
+
     }
 }
 
