@@ -11,7 +11,7 @@ import java.util.*;
 
 /**
  * @program: logHelper
- * @description:
+ * @description: 脱敏工具类
  * @packagename: com.logHelper.util
  * @author: cuitianhao
  * @date: 2022/08/27 16:33

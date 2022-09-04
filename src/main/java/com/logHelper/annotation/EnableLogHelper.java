@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Import;
 import java.lang.annotation.*;
 
 /**
- * @program: loghelper
+ * @program: logHelper
  * @description:
  * @packagename: com.logHelper.annotation
  * @author: cuitianhao
