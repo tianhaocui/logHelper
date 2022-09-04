@@ -11,10 +11,11 @@ printParameter 是否打印参数
 printResult    是否打印返回值
 
 
-# loghelper
+# logHelper
 
 <img width="1351" alt="image" src="https://user-images.githubusercontent.com/54015884/185789440-54b554de-bca0-424e-9c34-ae23115b7073.png">
 
-使用需要添加包扫描路径
+在启动类添加@EnableLogHelper注解使用
 
-<img width="822" alt="image" src="https://user-images.githubusercontent.com/54015884/185790993-62757195-4341-4116-8200-efac5dd23fb6.png">
+<img width="737" alt="image" src="https://user-images.githubusercontent.com/54015884/188315708-aeeb15b3-a124-47ad-b43c-ec2b59f8b7c7.png">
+
