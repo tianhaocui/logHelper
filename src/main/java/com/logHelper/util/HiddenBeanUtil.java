@@ -272,18 +272,18 @@ public class HiddenBeanUtil {
         }
     }
 
-    public static String replace(String data, Hidden.DataType type, String reg){
+    public static String replace(String data, Hidden.DataType type, String reg) {
         switch (type) {
             case ID_CARD: {
-               return idCard(data);
+                return idCard(data);
             }
             case EMAIL: {
-               return email(data);
+                return email(data);
             }
             case PHONE:
-               return phone(data);
+                return phone(data);
             case ACCOUNT:
-                return  account(data);
+                return account(data);
             case REG:
             default:
                 return reg(data, reg);

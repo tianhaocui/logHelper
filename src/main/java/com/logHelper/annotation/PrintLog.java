@@ -25,6 +25,7 @@ public @interface PrintLog {
 
     //是否打印参数
     boolean printParameter() default true;
+
     //todo 支持返回值打印脱敏
     //是否打印返回值
     boolean printResult() default true;
