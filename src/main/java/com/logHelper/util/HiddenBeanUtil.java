@@ -53,9 +53,9 @@ public class HiddenBeanUtil {
             }
             //系统类有好多没有无参构造方法
             if (StringUtils.startsWith(javaBean.getClass().getPackage().getName(), JAVAX)
-                    || !StringUtils.startsWith(javaBean.getClass().getPackage().getName(), JAVA)
-                    || !StringUtils.startsWith(javaBean.getClass().getName(), JAVAX)
-                    || !StringUtils.startsWith(javaBean.getClass().getName(), JAVA)) {
+                    || StringUtils.startsWith(javaBean.getClass().getPackage().getName(), JAVA)
+                    || StringUtils.startsWith(javaBean.getClass().getName(), JAVAX)
+                    || StringUtils.startsWith(javaBean.getClass().getName(), JAVA)) {
                 clone = javaBean;
             } else {
                 clone = (T) BeanUtils.instantiateClass(javaBean.getClass());

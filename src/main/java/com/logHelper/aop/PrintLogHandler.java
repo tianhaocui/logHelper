@@ -125,8 +125,15 @@ public class PrintLogHandler {
         sb.append("result: {},  ").append("use.time: {}ms");
         //耗时
         long cost = System.currentTimeMillis() - startTime;
-        printLog(printLog, sb.toString(), proceed, cost);
-        return proceed;
+        if (proceed != null) {
+            Object clone = HiddenBeanUtil.getClone(proceed);
+            printLog(printLog, sb.toString(), clone, cost);
+            return proceed;
+
+        }
+        printLog(printLog, sb.toString(), null, cost);
+
+        return null;
     }
 
     /**
