@@ -24,7 +24,7 @@ public @interface Hidden {
     /**
      * 数据类型
      */
-    enum DataType{
-        PHONE,EMAIL,ID_CARD,REG,ACCOUNT;
+    enum DataType {
+        PHONE, EMAIL, ID_CARD, REG, ACCOUNT;
     }
 }

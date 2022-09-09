@@ -62,13 +62,13 @@ public class PrintLogHandler {
         //获取不需要打印的参数名
         String[] exception = printLog.exception();
         List<String> exceptionList = null;
-        List<Object> argList =  new ArrayList<>(Arrays.asList(args));
+        List<Object> argList = new ArrayList<>(Arrays.asList(args));
         if (exception.length > 0) {
             exceptionList = Arrays.asList(exception);
         }
         Method method = methodSignature.getMethod();
 
-        for (int i = 0,j=0; i < argsName.length; i++,j++) {
+        for (int i = 0, j = 0; i < argsName.length; i++, j++) {
             if (exceptionList != null) {
                 if (exceptionList.contains(argsName[i])) {
                     argList.remove(j);
@@ -78,8 +78,8 @@ public class PrintLogHandler {
             }
             sb.append(argsName[i]).append(": {}");
             Hidden annotation = method.getParameters()[i].getAnnotation(Hidden.class);
-            if (annotation != null){
-                if (argList.get(i)!=null) {
+            if (annotation != null) {
+                if (argList.get(i) != null) {
                     argList.set(i, HiddenBeanUtil.replace(argList.get(i).toString(), annotation.dataType(), annotation.regexp()));
                 }
             }
@@ -125,8 +125,15 @@ public class PrintLogHandler {
         sb.append("result: {},  ").append("use.time: {}ms");
         //耗时
         long cost = System.currentTimeMillis() - startTime;
-        printLog(printLog, sb.toString(), proceed, cost);
-        return proceed;
+        if (proceed != null) {
+            Object clone = HiddenBeanUtil.getClone(proceed);
+            printLog(printLog, sb.toString(), clone, cost);
+            return proceed;
+
+        }
+        printLog(printLog, sb.toString(), null, cost);
+
+        return null;
     }
 
     /**
