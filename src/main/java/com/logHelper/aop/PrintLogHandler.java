@@ -54,9 +54,10 @@ public class PrintLogHandler {
             return;
         }
         Object[] args = point.getArgs();
+        String packageName = point.getTarget().getClass().getPackage().getName();
         StringBuilder sb = new StringBuilder();
         MethodSignature methodSignature = (MethodSignature) point.getSignature();
-        getMethodMessage(sb, printLog, methodSignature);
+        getMethodMessage(sb, printLog, methodSignature,packageName);
 
         String[] argsName = methodSignature.getParameterNames();
         //获取不需要打印的参数名
@@ -68,6 +69,12 @@ public class PrintLogHandler {
         }
         Method method = methodSignature.getMethod();
 
+        logText(sb, argsName, exceptionList, argList, method);
+        printLog(printLog, sb.toString(), argList.toArray());
+
+    }
+
+    private void logText(StringBuilder sb, String[] argsName, List<String> exceptionList, List<Object> argList, Method method) {
         for (int i = 0, j = 0; i < argsName.length; i++, j++) {
             if (exceptionList != null) {
                 if (exceptionList.contains(argsName[i])) {
@@ -88,8 +95,6 @@ public class PrintLogHandler {
                 sb.append(", ");
             }
         }
-        printLog(printLog, sb.toString(), argList.toArray());
-
     }
 
     /**
@@ -99,8 +104,8 @@ public class PrintLogHandler {
      * @param printLog
      * @param methodSignature
      */
-    private void getMethodMessage(StringBuilder sb, PrintLog printLog, MethodSignature methodSignature) {
-        sb.append("[ ").append(methodSignature.getMethod().getName()).append(" ]    ");
+    private void getMethodMessage(StringBuilder sb, PrintLog printLog, MethodSignature methodSignature,String packageName) {
+        sb.append("[ ").append(packageName).append(".").append(methodSignature.getMethod().getName()).append("() ]    ");
         if (printLog.remark().length() > 0) {
             sb.append("remark.[").append(printLog.remark()).append("]   ");
         }
@@ -120,8 +125,8 @@ public class PrintLogHandler {
         Object proceed = point.proceed();
         StringBuilder sb = new StringBuilder();
         MethodSignature methodSignature = (MethodSignature) point.getSignature();
-
-        getMethodMessage(sb, printLog, methodSignature);
+        String packageName = point.getTarget().getClass().getPackage().getName();
+        getMethodMessage(sb, printLog, methodSignature,packageName);
         sb.append("result: {},  ").append("use.time: {}ms");
         //耗时
         long cost = System.currentTimeMillis() - startTime;
