@@ -1,5 +1,6 @@
 package com.logHelper.annotation;
 
+import com.logHelper.aop.PrintCurlHandler;
 import com.logHelper.aop.PrintLogHandler;
 import org.springframework.context.annotation.Import;
 
@@ -16,6 +17,6 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Inherited
-@Import({PrintLogHandler.class})
+@Import({PrintLogHandler.class, PrintCurlHandler.class})
 public @interface EnableLogHelper {
 }
