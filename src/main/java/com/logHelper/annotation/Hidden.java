@@ -19,7 +19,7 @@ public @interface Hidden {
     DataType dataType() default DataType.PHONE;
 
     // 正则表达式的支持
-    String regexp() default "";
+    String regexp() default "\\S";
 
     /**
      * 数据类型

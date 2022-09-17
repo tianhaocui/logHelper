@@ -67,11 +67,7 @@ public class HttpUtils {
     private static FastByteArrayOutputStream readUtf8(InputStream in) throws IOException {
         FastByteArrayOutputStream out;
         if (in instanceof FileInputStream) {
-            try {
-                out = new FastByteArrayOutputStream(in.available());
-            } catch (IOException var7) {
-                throw var7;
-            }
+            out = new FastByteArrayOutputStream(in.available());
         } else {
             out = new FastByteArrayOutputStream();
         }

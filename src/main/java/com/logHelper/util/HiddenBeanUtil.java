@@ -37,7 +37,9 @@ public class HiddenBeanUtil {
     private static final String EMAIL_REGEX = "(^\\w)[^@]*(@.*$)";
 
     private static final String JAVAX = "javax.";
-    private static final String JAVA = "java.";
+    private static final String JAVA = "\"*\".";
+    private static final String STAR = "*";
+
 
     /**
      * 获取脱敏后的bean
@@ -212,7 +214,7 @@ public class HiddenBeanUtil {
         if (StringUtils.isBlank(id)) {
             return "";
         }
-        return id.replaceAll(ID_CORD_REGEX, "*");
+        return id.replaceAll(ID_CORD_REGEX, STAR);
     }
 
     /**
@@ -225,7 +227,7 @@ public class HiddenBeanUtil {
         if (StringUtils.isBlank(num)) {
             return "";
         }
-        return num.replaceAll(PHONE_REGEX, "*");
+        return num.replaceAll(PHONE_REGEX, STAR);
     }
 
     /**
@@ -238,7 +240,7 @@ public class HiddenBeanUtil {
         if (StringUtils.isBlank(account)) {
             return "";
         }
-        return account.replaceAll(ACCOUNT_REGEX, "*");
+        return account.replaceAll(ACCOUNT_REGEX, STAR);
     }
 
     /**
@@ -251,7 +253,7 @@ public class HiddenBeanUtil {
         if (StringUtils.isBlank(data)) {
             return "";
         }
-        return data.replaceAll(reg, "*");
+        return data.replaceAll(reg, STAR);
     }
 
     /**
