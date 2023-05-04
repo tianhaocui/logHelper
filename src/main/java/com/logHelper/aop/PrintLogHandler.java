@@ -3,7 +3,8 @@ package com.logHelper.aop;
 import com.logHelper.annotation.Hidden;
 import com.logHelper.annotation.PrintLog;
 import com.logHelper.util.HiddenBeanUtil;
-import lombok.extern.slf4j.Slf4j;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -20,8 +21,9 @@ import java.util.List;
  */
 @Component
 @Aspect
-@Slf4j
 public class PrintLogHandler {
+    private static final Logger logger = LogManager.getContext(true).getLogger(PrintLogHandler.class.getName());
+
     @Around("@annotation(com.logHelper.annotation.PrintLog)")
     public Object printLog(ProceedingJoinPoint point) throws Throwable {
         MethodSignature msig = (MethodSignature) point.getSignature();
@@ -57,7 +59,7 @@ public class PrintLogHandler {
         String packageName = point.getTarget().getClass().getPackage().getName();
         StringBuilder sb = new StringBuilder();
         MethodSignature methodSignature = (MethodSignature) point.getSignature();
-        getMethodMessage(sb, printLog, methodSignature,packageName);
+        getMethodMessage(sb, printLog, methodSignature, packageName);
 
         String[] argsName = methodSignature.getParameterNames();
         //获取不需要打印的参数名
@@ -104,7 +106,7 @@ public class PrintLogHandler {
      * @param printLog
      * @param methodSignature
      */
-    private void getMethodMessage(StringBuilder sb, PrintLog printLog, MethodSignature methodSignature,String packageName) {
+    private void getMethodMessage(StringBuilder sb, PrintLog printLog, MethodSignature methodSignature, String packageName) {
         sb.append("[ ").append(packageName).append(".").append(methodSignature.getMethod().getName()).append("() ]    ");
         if (printLog.remark().length() > 0) {
             sb.append("remark.[").append(printLog.remark()).append("]   ");
@@ -126,7 +128,7 @@ public class PrintLogHandler {
         StringBuilder sb = new StringBuilder();
         MethodSignature methodSignature = (MethodSignature) point.getSignature();
         String packageName = point.getTarget().getClass().getPackage().getName();
-        getMethodMessage(sb, printLog, methodSignature,packageName);
+        getMethodMessage(sb, printLog, methodSignature, packageName);
         sb.append("result: {},  ").append("use.time: {}ms");
         //耗时
         long cost = System.currentTimeMillis() - startTime;
@@ -155,20 +157,20 @@ public class PrintLogHandler {
         //打印级别
         switch (printLog.level()) {
             case TRACE:
-                log.trace(logContext, args);
+                logger.trace(logContext, args);
                 break;
             case DEBUG:
-                log.debug(logContext, args);
+                logger.debug(logContext, args);
                 break;
             case WARN:
-                log.warn(logContext, args);
+                logger.warn(logContext, args);
                 break;
             case ERROR:
-                log.error(logContext, args);
+                logger.error(logContext, args);
                 break;
             case INFO:
             default:
-                log.info(logContext, args);
+                logger.info(logContext, args);
         }
     }
 }

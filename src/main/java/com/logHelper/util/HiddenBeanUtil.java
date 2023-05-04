@@ -67,7 +67,6 @@ public class HiddenBeanUtil {
             Set<Integer> referenceCounter = new HashSet<Integer>();
             //脱敏
             replace(ObjUtils.getAllFields(clone), clone, referenceCounter);
-
         }
         return clone;
     }
@@ -124,7 +123,6 @@ public class HiddenBeanUtil {
                         } else if (value instanceof Enum<?>) {
                             continue;
                         }
-
                         //递归
                         else {
                             if (!type.isPrimitive()
@@ -138,7 +136,6 @@ public class HiddenBeanUtil {
                             }
                         }
                     }
-
                     //脱敏操作
                     setNewValueForField(javaBean, field, value);
 
