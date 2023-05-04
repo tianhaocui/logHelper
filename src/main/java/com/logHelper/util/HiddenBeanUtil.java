@@ -64,7 +64,7 @@ public class HiddenBeanUtil {
                 BeanUtils.copyProperties(javaBean, clone);
             }
             // 定义一个计数器，用于避免重复循环自定义对象类型的字段
-            Set<Integer> referenceCounter = new HashSet<Integer>();
+            Set<Integer> referenceCounter = new HashSet<>();
             //脱敏
             replace(ObjUtils.getAllFields(clone), clone, referenceCounter);
         }

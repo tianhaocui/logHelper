@@ -129,7 +129,7 @@ public class PrintLogHandler {
         MethodSignature methodSignature = (MethodSignature) point.getSignature();
         String packageName = point.getTarget().getClass().getPackage().getName();
         getMethodMessage(sb, printLog, methodSignature, packageName);
-        sb.append("result: {},  ").append("use.time: {}ms");
+        sb.append("result: {}   use.time: {}ms");
         //耗时
         long cost = System.currentTimeMillis() - startTime;
         if (proceed != null) {
