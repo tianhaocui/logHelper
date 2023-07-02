@@ -37,7 +37,7 @@ public class HiddenBeanUtil {
     private static final String EMAIL_REGEX = "(^\\w)[^@]*(@.*$)";
 
     private static final String JAVAX = "javax.";
-    private static final String JAVA = "\"*\".";
+    private static final String JAVA = "java.";
     private static final String STAR = "*";
 
 

@@ -17,6 +17,5 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Inherited
-@Import({PrintLogHandler.class, PrintCurlHandler.class})
 public @interface EnableLogHelper {
 }

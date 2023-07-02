@@ -8,10 +8,10 @@
 		<version>2.7.3</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>com.logHelper</groupId>
-	<artifactId>logHelper</artifactId>
+	<groupId>com.loghelper</groupId>
+	<artifactId>loghelper-spring-boot-start</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>logHelper</name>
+	<name>loghelper</name>
 	<properties>
 		<java.version>1.8</java.version>
 	</properties>
@@ -49,6 +49,32 @@
 			<artifactId>lombok</artifactId>
 			<optional>true</optional>
 		</dependency>
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>javax.servlet-api</artifactId>
+			<version>4.0.1</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter</artifactId>
+			<version>2.7.3</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-autoconfigure</artifactId>
+			<version>2.7.3</version>
+		</dependency>
+		<!--表示两个项目之间依赖不传递；不设置optional或者optional是false，表示传递依赖-->
+		<!--例如：project1依赖a.jar(optional=true),project2依赖project1,则project2不依赖a.jar-->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-configuration-processor</artifactId>
+			<optional>true</optional>
+		</dependency>
+
+
 	</dependencies>
 	<build>
 	<plugins>

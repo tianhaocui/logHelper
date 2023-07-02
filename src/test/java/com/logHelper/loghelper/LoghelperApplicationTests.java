@@ -1,4 +1,4 @@
-package com.logHelper.loghelper;
+package com.loghelper.loghelper;
 
 
 import com.logHelper.annotation.PrintLog;
