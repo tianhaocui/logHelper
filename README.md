@@ -15,7 +15,6 @@ printResult    是否打印返回值
 
 <img width="1351" alt="image" src="https://user-images.githubusercontent.com/54015884/185789440-54b554de-bca0-424e-9c34-ae23115b7073.png">
 
-在启动类添加@EnableLogHelper注解使用
+添加配置类LogHelperConfiguration来使用
 
-<img width="737" alt="image" src="https://user-images.githubusercontent.com/54015884/188315708-aeeb15b3-a124-47ad-b43c-ec2b59f8b7c7.png">
 
