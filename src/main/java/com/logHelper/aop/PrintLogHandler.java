@@ -10,6 +10,7 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StopWatch;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -123,22 +124,24 @@ public class PrintLogHandler {
         if (!printLog.printResult()) {
             return point.proceed();
         }
-        long startTime = System.currentTimeMillis();
-        Object proceed = point.proceed();
-        StringBuilder sb = new StringBuilder();
         MethodSignature methodSignature = (MethodSignature) point.getSignature();
+
+        StopWatch stopWatch = new StopWatch(methodSignature.getMethod().getName());
+        stopWatch.start(methodSignature.getMethod().getName());
+        Object proceed = point.proceed();
+        stopWatch.stop();
+
+        StringBuilder sb = new StringBuilder();
         String packageName = point.getTarget().getClass().getPackage().getName();
         getMethodMessage(sb, printLog, methodSignature, packageName);
-        sb.append("result: {}   use.time: {}ms");
         //耗时
-        long cost = System.currentTimeMillis() - startTime;
         if (proceed != null) {
             Object clone = HiddenBeanUtil.getClone(proceed);
-            printLog(printLog, sb.toString(), clone, cost);
+            printLog(printLog, sb.toString(), clone,stopWatch.prettyPrint());
             return proceed;
 
         }
-        printLog(printLog, sb.toString(), null, cost);
+        printLog(printLog, sb.toString(), null,stopWatch.prettyPrint());
 
         return null;
     }
@@ -171,6 +174,7 @@ public class PrintLogHandler {
             case INFO:
             default:
                 logger.info(logContext, args);
+
         }
     }
 }
