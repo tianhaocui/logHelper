@@ -1,5 +1,7 @@
 package com.logHelper.annotation;
 
+import com.logHelper.handler.DefaultOnExceptionHandler;
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -30,6 +32,7 @@ public @interface PrintLog {
     //是否打印返回值
     boolean printResult() default true;
 
+    Class<DefaultOnExceptionHandler> onException() default DefaultOnExceptionHandler.class;
     enum Level {
         TRACE, DEBUG, INFO, WARN, ERROR
     }
