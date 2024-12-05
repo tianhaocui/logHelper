@@ -31,7 +31,6 @@ public class PrintCurlHandler {
         String curl = HttpUtils.getCurl(request);
         if (curl != null) {
             log.info(curl);
-
         }
     }
 }
