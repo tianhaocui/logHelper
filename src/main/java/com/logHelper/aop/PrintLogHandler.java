@@ -109,7 +109,7 @@ public class PrintLogHandler {
      */
     private void getMethodMessage(StringBuilder sb, PrintLog printLog, MethodSignature methodSignature, String packageName) {
         sb.append("[ ").append(packageName).append(".").append(methodSignature.getMethod().getName()).append("() ]    ");
-        if (printLog.remark().length() > 0) {
+        if (!printLog.remark().isEmpty()) {
             sb.append("remark.[").append(printLog.remark()).append("]   ");
         }
     }
