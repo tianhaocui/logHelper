@@ -12,6 +12,20 @@
 	<artifactId>loghelper-spring-boot-start</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>loghelper</name>
+
+	<developers>
+		<developer>
+			<id>cuitianhao</id>
+			<name>cuitianhao</name>
+			<email>hoopoo@163.com</email>
+			<roles>
+				<role>Project Manager</role>
+				<role>Architect</role>
+			</roles>
+		</developer>
+	</developers>
+
+
 	<properties>
 		<java.version>1.8</java.version>
 	</properties>
