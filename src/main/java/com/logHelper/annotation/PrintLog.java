@@ -6,11 +6,10 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * @program: logHelper
- * @description:
- * @packagename: com.logHelper.annotation
+ * 
+ * 
+ * 
  * @author: cuitianhao
- * @date: 2022/08/21 16:03
  **/
 @Target({ElementType.PARAMETER, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)

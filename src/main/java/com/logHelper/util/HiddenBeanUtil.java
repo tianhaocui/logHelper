@@ -10,11 +10,10 @@ import java.lang.reflect.Field;
 import java.util.*;
 
 /**
- * @program: logHelper
- * @description: 脱敏工具类
- * @packagename: com.logHelper.util
+ * 
+ *  脱敏工具类
+ * 
  * @author: cuitianhao
- * @date: 2022/08/27 16:33
  **/
 public class HiddenBeanUtil {
 
@@ -166,9 +165,9 @@ public class HiddenBeanUtil {
     /**
      * 脱敏操作（按照规则转化需要脱敏的字段并设置新值）
      *
-     * @param javaBean
-     * @param field
-     * @param value
+     * @param javaBean 对象
+     * @param field 字段
+     * @param value 值
      * @throws IllegalAccessException
      */
     public static void setNewValueForField(Object javaBean, Field field, Object value) throws IllegalAccessException {

@@ -8,11 +8,10 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
 /**
- * @program: logHelper
- * @description:
- * @packagename: com.logHelper.configuration
+ * 
+ * 
+ * 
  * @author: cuitianhao
- * @date: 2023/07/01 16:35
  **/
 @Configuration
 @EnableConfigurationProperties(LogHelperProperties.class)

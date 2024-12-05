@@ -9,14 +9,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
 
-
-/**
- * @program: logHelper
- * @description:
- * @packagename: com.logHelper.util
- * @author: cuitianhao
- * @date: 2022/09/12 16:08
- **/
 public class HttpUtils {
     private static final String FORMAT_HEADER = "-H \"%1$s:%2$s\"";
     private static final String FORMAT_METHOD = "-X %1$s";
@@ -61,8 +53,6 @@ public class HttpUtils {
         parts.add(String.format(FORMAT_URL, url));
         return StringUtils.join(parts," " );
     }
-
-
 
     private static FastByteArrayOutputStream readUtf8(InputStream in) throws IOException {
         FastByteArrayOutputStream out;
