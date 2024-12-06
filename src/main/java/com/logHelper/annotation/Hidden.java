@@ -6,9 +6,9 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * 
- *  脱敏
- * 
+ * 脱敏
+ * must use on filed type:String.class
+ *
  * @author: cuitianhao
  **/
 @Target({ElementType.PARAMETER, ElementType.FIELD})

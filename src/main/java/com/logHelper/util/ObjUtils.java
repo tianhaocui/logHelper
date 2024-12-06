@@ -20,10 +20,10 @@ public class ObjUtils {
      */
     public static Field[] getAllFields(Object objSource) {
         //获得当前类的所有属性
-        List<Field> fieldList = new ArrayList<Field>();
-        Class tempClass = objSource.getClass();
+        List<Field> fieldList = new ArrayList<>();
+        Class<?> tempClass = objSource.getClass();
         //当父类为null的时候说明到达了最上层的父类(Object类).
-        while (tempClass != null && !OBJECT_PATH.equals(tempClass.getName().toLowerCase())) {
+        while (tempClass != null && !OBJECT_PATH.equalsIgnoreCase(tempClass.getName())) {
             fieldList.addAll(Arrays.asList(tempClass.getDeclaredFields()));
             tempClass = tempClass.getSuperclass();
         }

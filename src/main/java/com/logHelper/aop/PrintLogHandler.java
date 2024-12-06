@@ -1,8 +1,13 @@
 package com.logHelper.aop;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.logHelper.annotation.Hidden;
 import com.logHelper.annotation.PrintLog;
+import com.logHelper.handler.HiddenFieldHandler;
 import com.logHelper.util.HiddenBeanUtil;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -15,6 +20,7 @@ import org.springframework.util.StopWatch;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -24,6 +30,12 @@ import java.util.List;
 @Aspect
 public class PrintLogHandler {
     private static final Logger logger = LogManager.getContext(true).getLogger(PrintLogHandler.class.getName());
+    private static final ObjectMapper mapper = new ObjectMapper();
+
+    {
+        mapper.registerModule(new HiddenFieldHandler());
+    }
+
 
     @Around("@annotation(com.logHelper.annotation.PrintLog)")
     public Object printLog(ProceedingJoinPoint point) throws Throwable {
@@ -78,6 +90,7 @@ public class PrintLogHandler {
     }
 
     private void logText(StringBuilder sb, String[] argsName, List<String> exceptionList, List<Object> argList, Method method) {
+        //去除不需要打印的参数
         for (int i = 0, j = 0; i < argsName.length; i++, j++) {
             if (exceptionList != null) {
                 if (exceptionList.contains(argsName[i])) {
@@ -90,7 +103,13 @@ public class PrintLogHandler {
             Hidden annotation = method.getParameters()[i].getAnnotation(Hidden.class);
             if (annotation != null) {
                 if (argList.get(i) != null) {
-                    argList.set(i, HiddenBeanUtil.replace(argList.get(i).toString(), annotation.dataType(), annotation.regexp()));
+                    try {
+                        String s = mapper.writeValueAsString(argList.get(i));
+                        argList.set(i, s);
+
+                    } catch (JsonProcessingException e) {
+                        argList.set(i, HiddenBeanUtil.replace(argList.get(i).toString(), annotation.dataType(), annotation.regexp()));
+                    }
                 }
             }
 
@@ -130,19 +149,23 @@ public class PrintLogHandler {
         stopWatch.start(methodSignature.getMethod().getName());
         Object proceed = point.proceed();
         stopWatch.stop();
+        try {
+            StringBuilder sb = new StringBuilder();
+            String packageName = point.getTarget().getClass().getPackage().getName();
+            getMethodMessage(sb, printLog, methodSignature, packageName);
 
-        StringBuilder sb = new StringBuilder();
-        String packageName = point.getTarget().getClass().getPackage().getName();
-        getMethodMessage(sb, printLog, methodSignature, packageName);
-        //耗时
-        if (proceed != null) {
-            Object clone = HiddenBeanUtil.getClone(proceed);
-            printLog(printLog, sb.toString(), clone,stopWatch.prettyPrint());
-            return proceed;
-
+            if (proceed != null) {
+                Object clone = HiddenBeanUtil.getClone(proceed);
+                sb.append("{},");
+                printLog(printLog, sb.toString(), clone);
+                logger.info("{}", stopWatch.prettyPrint());
+                return proceed;
+            }
+            printLog(printLog, sb.toString(), null);
+            logger.info("{}", stopWatch.prettyPrint());
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        printLog(printLog, sb.toString(), null,stopWatch.prettyPrint());
-
         return null;
     }
 
@@ -155,7 +178,14 @@ public class PrintLogHandler {
     private void printLog(PrintLog printLog, String logContext, Object... objects) throws IllegalAccessException {
         Object[] args = new Object[objects.length];
         for (int i = 0; i < objects.length; i++) {
-            args[i] = HiddenBeanUtil.getClone(objects[i]);
+            try {
+                String s = mapper.writeValueAsString(objects[i]);
+                args[i] = s;
+
+            } catch (JsonProcessingException e) {
+                args[i] = HiddenBeanUtil.getClone(objects[i]);
+            }
+//            args[i] = HiddenBeanUtil.getClone(objects[i]);
         }
         //打印级别
         switch (printLog.level()) {
@@ -177,4 +207,41 @@ public class PrintLogHandler {
 
         }
     }
+
+    public static void main(String[] args) {
+
+        Integer integer = 1;
+        try {
+            String student = mapper.writeValueAsString(new A("123", "123"));
+            System.out.println(student);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+
+
+    }
+
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class A {
+        private String email;;
+        private String phone;
+
+        public String getEmail() {
+            return email;
+        }
+
+        public void setEmail(String email) {
+            this.email = email;
+        }
+
+        public String getPhone() {
+            return phone;
+        }
+
+        public void setPhone(String phone) {
+            this.phone = phone;
+        }
+    }
+
 }

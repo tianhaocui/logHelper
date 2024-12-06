@@ -80,7 +80,7 @@ public class HiddenBeanUtil {
      * @throws IllegalAccessException
      */
     private static void replace(Field[] fields, Object javaBean, Set<Integer> referenceCounter) throws IllegalArgumentException, IllegalAccessException {
-        if (null != fields && fields.length > 0) {
+        if (null != fields) {
             for (Field field : fields) {
                 field.setAccessible(true);
                 if (null != javaBean) {

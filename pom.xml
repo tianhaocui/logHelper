@@ -10,7 +10,7 @@
     </parent>
     <groupId>io.github.tianhaocui</groupId>
     <artifactId>loghelper-spring-boot-start</artifactId>
-    <version>1.0.5</version>
+    <version>1.0.6-RELEASE</version>
     <name>log-helper</name>
 
     <licenses>
@@ -29,7 +29,6 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java.version>1.8</java.version>
-
     </properties>
 
     <developers>
@@ -81,11 +80,20 @@
             <version>4.0.1</version>
             <scope>provided</scope>
         </dependency>
-
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <version>4.0.1</version>
+        </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter</artifactId>
             <version>2.7.3</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>2.11.2</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
