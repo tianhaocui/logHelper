@@ -1,15 +1,13 @@
 package com.logHelper.aop;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.logHelper.util.HttpUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.springframework.stereotype.Component;
 
-import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -20,22 +18,17 @@ import javax.servlet.http.HttpServletRequest;
 @Aspect
 @Slf4j
 public class PrintCurlHandler {
-    private static final ObjectMapper mapper = new ObjectMapper();
 
     @Before("@annotation(com.logHelper.annotation.PrintCurl)")
     public void printLog() {
-        RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
+        ServletRequestAttributes requestAttributes = (ServletRequestAttributes)RequestContextHolder.getRequestAttributes();
+
+        // get the request
         if (requestAttributes != null) {
-            Object o = requestAttributes.resolveReference(RequestAttributes.REFERENCE_REQUEST);
-            try {
-                String s = mapper.writeValueAsString(o);
-                HttpServletRequest request =mapper.convertValue(s, HttpServletRequest.class);
-                printCurlLog(request);
-
-            } catch (JsonProcessingException e) {
-            }
-
+            HttpServletRequest request = requestAttributes.getRequest();
+            printCurlLog(request);
         }
+
     }
 
     private void printCurlLog(HttpServletRequest request) {
@@ -44,5 +37,8 @@ public class PrintCurlHandler {
             log.info(curl);
         }
     }
+
+
+
 }
 
