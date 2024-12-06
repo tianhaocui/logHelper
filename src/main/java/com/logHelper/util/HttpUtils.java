@@ -3,7 +3,7 @@ package com.logHelper.util;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.util.FastByteArrayOutputStream;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;

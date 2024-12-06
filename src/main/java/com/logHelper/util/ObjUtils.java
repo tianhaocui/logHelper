@@ -7,7 +7,7 @@ import java.util.*;
  * 
  *  对象、属性处理
  * 
- * @author: cuitianhao
+ * author: cuitianhao
  **/
 public class ObjUtils {
     private static final String OBJECT_PATH = "java.lang.object";

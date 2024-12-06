@@ -9,7 +9,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
+
 
 /**
  * @author cuitianhao
@@ -21,14 +22,16 @@ public class PrintCurlHandler {
 
     @Before("@annotation(com.logHelper.annotation.PrintCurl)")
     public void printLog() {
+        try {
         ServletRequestAttributes requestAttributes = (ServletRequestAttributes)RequestContextHolder.getRequestAttributes();
-
         // get the request
         if (requestAttributes != null) {
             HttpServletRequest request = requestAttributes.getRequest();
             printCurlLog(request);
         }
+        }catch (Exception e) {
 
+        }
     }
 
     private void printCurlLog(HttpServletRequest request) {

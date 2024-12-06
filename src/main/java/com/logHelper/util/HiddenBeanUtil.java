@@ -13,7 +13,7 @@ import java.util.*;
  * 
  *  脱敏工具类
  * 
- * @author: cuitianhao
+ * author: cuitianhao
  **/
 public class HiddenBeanUtil {
 

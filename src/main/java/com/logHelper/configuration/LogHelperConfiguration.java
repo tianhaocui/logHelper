@@ -12,7 +12,7 @@ import org.springframework.context.annotation.Import;
  * 
  * 
  * 
- * @author: cuitianhao
+ * author: cuitianhao
  **/
 @Configuration
 @EnableConfigurationProperties(LogHelperProperties.class)

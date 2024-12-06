@@ -9,7 +9,6 @@ import java.lang.annotation.Target;
  * 
  * 
  * 
- * @author: cuitianhao
  **/
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)

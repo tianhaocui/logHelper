@@ -6,10 +6,10 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
+ * cuitianhao
  * 脱敏
  * must use on filed type:String.class
  *
- * @author: cuitianhao
  **/
 @Target({ElementType.PARAMETER, ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
@@ -17,7 +17,12 @@ public @interface Hidden {
 
     DataType dataType() default DataType.PHONE;
 
-    // 正则表达式的支持
+    /**
+     * Specifies the regular expression to use for matching.
+     * By default, it matches any non-whitespace character.
+     *
+     * @return the regular expression
+     */
     String regexp() default "\\S";
 
     /**

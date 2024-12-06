@@ -11,7 +11,7 @@ import java.lang.annotation.Target;
  * 
  * 
  * 
- * @author: cuitianhao
+ * author: cuitianhao
  **/
 @Target({ElementType.PARAMETER, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
