@@ -14,6 +14,5 @@ public class DefaultOnExceptionHandler extends OnExceptionHandler{
     @Override
     public void onException(ProceedingJoinPoint point, Exception e) {
         log.error(e.getMessage());
-        return;
     }
 }

@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
 
-public class HttpUtils {
+public class HttpUtil {
     private static final String FORMAT_HEADER = "-H \"%1$s:%2$s\"";
     private static final String FORMAT_METHOD = "-X %1$s";
     private static final String FORMAT_BODY = "-d '%1$s'";

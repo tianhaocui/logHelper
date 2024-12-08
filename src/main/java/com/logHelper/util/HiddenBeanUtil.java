@@ -170,7 +170,7 @@ public class HiddenBeanUtil {
      * @param value 值
      * @throws IllegalAccessException
      */
-    public static void setNewValueForField(Object javaBean, Field field, Object value) throws IllegalAccessException {
+    private static void setNewValueForField(Object javaBean, Field field, Object value) throws IllegalAccessException {
         //处理自身的属性
         Hidden annotation = field.getAnnotation(Hidden.class);
         if (field.getType().equals(String.class) && null != annotation) {
@@ -206,7 +206,7 @@ public class HiddenBeanUtil {
      * @param id
      * @return
      */
-    public static String idCard(String id) {
+    private static String idCard(String id) {
         if (StringUtils.isBlank(id)) {
             return "";
         }
@@ -219,7 +219,7 @@ public class HiddenBeanUtil {
      * @param num
      * @return
      */
-    public static String phone(String num) {
+    private static String phone(String num) {
         if (StringUtils.isBlank(num)) {
             return "";
         }
@@ -232,7 +232,7 @@ public class HiddenBeanUtil {
      * @param account
      * @return
      */
-    public static String account(String account) {
+    private static String account(String account) {
         if (StringUtils.isBlank(account)) {
             return "";
         }
@@ -245,7 +245,7 @@ public class HiddenBeanUtil {
      * @param data
      * @return
      */
-    public static String reg(String data, String reg) {
+    private static String reg(String data, String reg) {
         if (StringUtils.isBlank(data)) {
             return "";
         }
@@ -258,7 +258,7 @@ public class HiddenBeanUtil {
      * @param email
      * @return
      */
-    public static String email(String email) {
+    private static String email(String email) {
         if (StringUtils.isBlank(email)) {
             return "";
         }

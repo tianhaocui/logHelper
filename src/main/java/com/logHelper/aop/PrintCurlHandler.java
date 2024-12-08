@@ -1,6 +1,6 @@
 package com.logHelper.aop;
 
-import com.logHelper.util.HttpUtils;
+import com.logHelper.util.HttpUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
@@ -35,7 +35,7 @@ public class PrintCurlHandler {
     }
 
     private void printCurlLog(HttpServletRequest request) {
-        String curl = HttpUtils.getCurl(request);
+        String curl = HttpUtil.getCurl(request);
         if (curl != null) {
             log.info(curl);
         }

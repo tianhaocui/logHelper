@@ -2,12 +2,11 @@ package com.logHelper.aop;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.logHelper.annotation.Hidden;
 import com.logHelper.annotation.PrintLog;
 import com.logHelper.handler.HiddenFieldHandler;
 import com.logHelper.util.HiddenBeanUtil;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -29,10 +28,12 @@ import java.util.List;
 @Aspect
 public class PrintLogHandler {
     private static final Logger logger = LogManager.getContext(true).getLogger(PrintLogHandler.class.getName());
-    private static final ObjectMapper mapper = new ObjectMapper();
+    private final ObjectMapper mapper = new ObjectMapper();
 
     {
+        //todo 支持自定义的序列化方式和自定义模块装载
         mapper.registerModule(new HiddenFieldHandler());
+        mapper.registerModule(new JavaTimeModule());
     }
 
 
@@ -73,50 +74,12 @@ public class PrintLogHandler {
         MethodSignature methodSignature = (MethodSignature) point.getSignature();
         getMethodMessage(sb, printLog, methodSignature, packageName);
 
-        String[] argsName = methodSignature.getParameterNames();
-        //获取不需要打印的参数名
-        String[] exception = printLog.exception();
-        List<String> exceptionList = null;
         List<Object> argList = new ArrayList<>(Arrays.asList(args));
-        if (exception.length > 0) {
-            exceptionList = Arrays.asList(exception);
-        }
-        Method method = methodSignature.getMethod();
 
-        logText(sb, argsName, exceptionList, argList, method);
         printLog(printLog, sb.toString(), argList.toArray());
 
     }
 
-    private void logText(StringBuilder sb, String[] argsName, List<String> exceptionList, List<Object> argList, Method method) {
-        //去除不需要打印的参数
-        for (int i = 0, j = 0; i < argsName.length; i++, j++) {
-            if (exceptionList != null) {
-                if (exceptionList.contains(argsName[i])) {
-                    argList.remove(j);
-                    j--;
-                    continue;
-                }
-            }
-            sb.append(argsName[i]).append(": {}");
-            Hidden annotation = method.getParameters()[i].getAnnotation(Hidden.class);
-            if (annotation != null) {
-                if (argList.get(i) != null) {
-                    try {
-                        String s = mapper.writeValueAsString(argList.get(i));
-                        argList.set(i, s);
-
-                    } catch (JsonProcessingException e) {
-                        argList.set(i, HiddenBeanUtil.replace(argList.get(i).toString(), annotation.dataType(), annotation.regexp()));
-                    }
-                }
-            }
-
-            if (i < argsName.length - 1) {
-                sb.append(", ");
-            }
-        }
-    }
 
     /**
      * 添加方法信息和remark
@@ -143,7 +106,6 @@ public class PrintLogHandler {
             return point.proceed();
         }
         MethodSignature methodSignature = (MethodSignature) point.getSignature();
-
         StopWatch stopWatch = new StopWatch(methodSignature.getMethod().getName());
         stopWatch.start(methodSignature.getMethod().getName());
         Object proceed = point.proceed();
@@ -154,18 +116,19 @@ public class PrintLogHandler {
             getMethodMessage(sb, printLog, methodSignature, packageName);
 
             if (proceed != null) {
-                Object clone = HiddenBeanUtil.getClone(proceed);
+                String s = mapper.writeValueAsString(proceed);
                 sb.append("{},");
-                printLog(printLog, sb.toString(), clone);
+                printLog(printLog, sb.toString(), s);
                 logger.info("{}", stopWatch.prettyPrint());
-                return proceed;
+            } else {
+                printLog(printLog, sb.toString());
+                logger.info("{}", stopWatch.prettyPrint());
             }
-            printLog(printLog, sb.toString(), null);
-            logger.info("{}", stopWatch.prettyPrint());
         } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            return proceed;
         }
-        return null;
     }
 
     /**
@@ -175,16 +138,16 @@ public class PrintLogHandler {
      * @param logContext
      */
     private void printLog(PrintLog printLog, String logContext, Object... objects) throws IllegalAccessException {
+        if (objects == null) return;
         Object[] args = new Object[objects.length];
         for (int i = 0; i < objects.length; i++) {
             try {
                 String s = mapper.writeValueAsString(objects[i]);
                 args[i] = s;
-
             } catch (JsonProcessingException e) {
+                //兜底策略
                 args[i] = HiddenBeanUtil.getClone(objects[i]);
             }
-//            args[i] = HiddenBeanUtil.getClone(objects[i]);
         }
         //打印级别
         switch (printLog.level()) {
@@ -203,43 +166,6 @@ public class PrintLogHandler {
             case INFO:
             default:
                 logger.info(logContext, args);
-
-        }
-    }
-
-    public static void main(String[] args) {
-
-        Integer integer = 1;
-        try {
-            String student = mapper.writeValueAsString(new A("123", "123"));
-            System.out.println(student);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
-        }
-
-
-    }
-
-    @AllArgsConstructor
-    @NoArgsConstructor
-    public static class A {
-        private String email;;
-        private String phone;
-
-        public String getEmail() {
-            return email;
-        }
-
-        public void setEmail(String email) {
-            this.email = email;
-        }
-
-        public String getPhone() {
-            return phone;
-        }
-
-        public void setPhone(String phone) {
-            this.phone = phone;
         }
     }
 
