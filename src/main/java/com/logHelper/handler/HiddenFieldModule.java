@@ -15,13 +15,13 @@ import java.io.IOException;
 import java.util.List;
 
 /**
- * Description:
+ * Description: 字段脱敏
  * Author: cth
  * Created Date: 2024-12-05
  */
-public class HiddenFieldHandler extends SimpleModule {
+public class HiddenFieldModule extends SimpleModule {
 
-    public HiddenFieldHandler() {
+    public HiddenFieldModule() {
         setSerializerModifier(new HiddenFieldSerializerModifier());
     }
 
@@ -39,15 +39,7 @@ public class HiddenFieldHandler extends SimpleModule {
     }
 
     static class HiddenFieldSerializer extends JsonSerializer<Object> {
-        private Hidden hidden;
-
-        public Hidden getHidden() {
-            return hidden;
-        }
-
-        public void setHidden(Hidden hidden) {
-            this.hidden = hidden;
-        }
+        private final Hidden hidden;
 
         public HiddenFieldSerializer(Hidden hidden) {
             this.hidden = hidden;
@@ -58,7 +50,7 @@ public class HiddenFieldHandler extends SimpleModule {
             if (null ==o)
                 return;
             String replace = HiddenBeanUtil.replace(o.toString(), hidden.dataType(), hidden.regexp());
-            gen.writeString(replace); // 脱敏后的值，可根据需求修改
+            gen.writeString(replace);
         }
     }
 }

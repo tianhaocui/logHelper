@@ -3,9 +3,10 @@ package com.logHelper.aop;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.logHelper.annotation.Hidden;
 import com.logHelper.annotation.PrintLog;
-import com.logHelper.handler.HiddenFieldHandler;
+import com.logHelper.handler.DefaultOnExceptionHandler;
+import com.logHelper.handler.HiddenFieldModule;
+import com.logHelper.handler.OnExceptionHandler;
 import com.logHelper.util.HiddenBeanUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -32,7 +33,7 @@ public class PrintLogHandler {
 
     {
         //todo 支持自定义的序列化方式和自定义模块装载
-        mapper.registerModule(new HiddenFieldHandler());
+        mapper.registerModule(new HiddenFieldModule());
         mapper.registerModule(new JavaTimeModule());
     }
 
@@ -46,12 +47,9 @@ public class PrintLogHandler {
             //获取当前方法
             Method currentMethod = target.getClass().getMethod(msig.getName(), msig.getParameterTypes());
             PrintLog printLog = currentMethod.getAnnotation(PrintLog.class);
-            if (printLog != null) {
-                printParamLog(printLog, point);
-                result = printResultLog(printLog, point);
-            } else {
-                result = point.proceed();
-            }
+            //打印参数日志
+            printParamLog(printLog, point);
+            result = printResultLog(printLog, point);
         } catch (NoSuchMethodException e) {
             logger.debug("printLog exception on ", e);
         }
@@ -62,9 +60,9 @@ public class PrintLogHandler {
      * 打印参数
      *
      * @param printLog 需要打印的log
-     * @param point 切点
+     * @param point    切点
      */
-    private void printParamLog(PrintLog printLog, ProceedingJoinPoint point) throws IllegalAccessException {
+    private void printParamLog(PrintLog printLog, ProceedingJoinPoint point) {
         if (!printLog.printParameter()) {
             return;
         }
@@ -75,7 +73,6 @@ public class PrintLogHandler {
         getMethodMessage(sb, printLog, methodSignature, packageName);
 
         List<Object> argList = new ArrayList<>(Arrays.asList(args));
-
         printLog(printLog, sb.toString(), argList.toArray());
 
     }
@@ -84,8 +81,8 @@ public class PrintLogHandler {
     /**
      * 添加方法信息和remark
      *
-     * @param sb    log context
-     * @param printLog log annotation
+     * @param sb              log context
+     * @param printLog        log annotation
      * @param methodSignature method signature
      */
     private void getMethodMessage(StringBuilder sb, PrintLog printLog, MethodSignature methodSignature, String packageName) {
@@ -102,28 +99,34 @@ public class PrintLogHandler {
      * @param point    point
      */
     private Object printResultLog(PrintLog printLog, ProceedingJoinPoint point) throws Throwable {
-        if (!printLog.printResult()) {
-            return point.proceed();
-        }
+
         MethodSignature methodSignature = (MethodSignature) point.getSignature();
         StopWatch stopWatch = new StopWatch(methodSignature.getMethod().getName());
         stopWatch.start(methodSignature.getMethod().getName());
-        Object proceed = point.proceed();
+        Object proceed;
+        try {
+            proceed = point.proceed();
+        } catch (Exception e) {
+            OnExceptionHandler onExceptionHandler = printLog.onException().getDeclaredConstructor().newInstance();
+            onExceptionHandler.onException(point,e,printLog.exception());
+            throw e;
+        }
         stopWatch.stop();
+        logger.info("{}", stopWatch.prettyPrint());
+        if (!printLog.printResult()) {
+            // 不需要打印返回值的情况
+            return point.proceed();
+        }
         try {
             StringBuilder sb = new StringBuilder();
             String packageName = point.getTarget().getClass().getPackage().getName();
             getMethodMessage(sb, printLog, methodSignature, packageName);
 
             if (proceed != null) {
-                String s = mapper.writeValueAsString(proceed);
-
                 sb.append("{},");
-                printLog(printLog, sb.toString(), s);
-                logger.info("{}", stopWatch.prettyPrint());
+                printLog(printLog, sb.toString(), mapper.writeValueAsString(proceed));
             } else {
                 printLog(printLog, sb.toString());
-                logger.info("{}", stopWatch.prettyPrint());
             }
         } catch (Exception e) {
             logger.debug("printResultLog exception on ", e);
@@ -131,11 +134,12 @@ public class PrintLogHandler {
         return proceed;
     }
 
+
     /**
      * 打印日志
      *
-     * @param printLog      log annotation
-     * @param logContext    log context
+     * @param printLog   log annotation
+     * @param logContext log context
      */
     private void printLog(PrintLog printLog, String logContext, Object... objects) {
         if (objects == null) return;

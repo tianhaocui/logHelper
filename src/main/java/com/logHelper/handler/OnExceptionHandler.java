@@ -8,5 +8,6 @@ import org.aspectj.lang.ProceedingJoinPoint;
  * Created Date: 2024-12-05
  */
 public abstract class OnExceptionHandler {
-    abstract void onException(ProceedingJoinPoint point, Exception e);
+    public abstract void onException(ProceedingJoinPoint point, Exception e, String[] exception);
+
 }

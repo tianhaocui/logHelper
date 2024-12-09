@@ -9,10 +9,12 @@ import org.aspectj.lang.ProceedingJoinPoint;
  * Created Date: 2024-12-05
  */
 @Slf4j
-public class DefaultOnExceptionHandler extends OnExceptionHandler{
+public class DefaultOnExceptionHandler extends OnExceptionHandler {
+
+    public static final DefaultOnExceptionHandler INSTANCE = new DefaultOnExceptionHandler();
 
     @Override
-    public void onException(ProceedingJoinPoint point, Exception e) {
+    public void onException(ProceedingJoinPoint point, Exception e, String[] exception) {
         log.error(e.getMessage());
     }
 }
