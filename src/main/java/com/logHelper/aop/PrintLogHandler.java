@@ -61,8 +61,8 @@ public class PrintLogHandler {
     /**
      * 打印参数
      *
-     * @param printLog
-     * @param point
+     * @param printLog 需要打印的log
+     * @param point 切点
      */
     private void printParamLog(PrintLog printLog, ProceedingJoinPoint point) throws IllegalAccessException {
         if (!printLog.printParameter()) {
@@ -84,9 +84,9 @@ public class PrintLogHandler {
     /**
      * 添加方法信息和remark
      *
-     * @param sb
-     * @param printLog
-     * @param methodSignature
+     * @param sb    log context
+     * @param printLog log annotation
+     * @param methodSignature method signature
      */
     private void getMethodMessage(StringBuilder sb, PrintLog printLog, MethodSignature methodSignature, String packageName) {
         sb.append("[ ").append(packageName).append(".").append(methodSignature.getMethod().getName()).append("() ]    ");
@@ -98,8 +98,8 @@ public class PrintLogHandler {
     /**
      * 执行并打印返回值
      *
-     * @param printLog
-     * @param point
+     * @param printLog log annotation
+     * @param point    point
      */
     private Object printResultLog(PrintLog printLog, ProceedingJoinPoint point) throws Throwable {
         if (!printLog.printResult()) {
@@ -117,6 +117,7 @@ public class PrintLogHandler {
 
             if (proceed != null) {
                 String s = mapper.writeValueAsString(proceed);
+
                 sb.append("{},");
                 printLog(printLog, sb.toString(), s);
                 logger.info("{}", stopWatch.prettyPrint());
@@ -133,10 +134,10 @@ public class PrintLogHandler {
     /**
      * 打印日志
      *
-     * @param printLog
-     * @param logContext
+     * @param printLog      log annotation
+     * @param logContext    log context
      */
-    private void printLog(PrintLog printLog, String logContext, Object... objects) throws IllegalAccessException {
+    private void printLog(PrintLog printLog, String logContext, Object... objects) {
         if (objects == null) return;
         Object[] args = new Object[objects.length];
         for (int i = 0; i < objects.length; i++) {
