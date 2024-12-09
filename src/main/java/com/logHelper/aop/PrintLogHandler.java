@@ -53,7 +53,7 @@ public class PrintLogHandler {
                 result = point.proceed();
             }
         } catch (NoSuchMethodException e) {
-            e.printStackTrace();
+            logger.debug("printLog exception on ", e);
         }
         return result;
     }
@@ -125,10 +125,9 @@ public class PrintLogHandler {
                 logger.info("{}", stopWatch.prettyPrint());
             }
         } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            return proceed;
+            logger.debug("printResultLog exception on ", e);
         }
+        return proceed;
     }
 
     /**
@@ -142,14 +141,12 @@ public class PrintLogHandler {
         Object[] args = new Object[objects.length];
         for (int i = 0; i < objects.length; i++) {
             try {
-                String s = mapper.writeValueAsString(objects[i]);
-                args[i] = s;
+                args[i] = mapper.writeValueAsString(objects[i]);
             } catch (JsonProcessingException e) {
-                //兜底策略
-                args[i] = HiddenBeanUtil.getClone(objects[i]);
+                args[i] = attemptClone(objects[i]);
             }
         }
-        //打印级别
+
         switch (printLog.level()) {
             case TRACE:
                 logger.trace(logContext, args);
@@ -169,4 +166,11 @@ public class PrintLogHandler {
         }
     }
 
+    private Object attemptClone(Object object) {
+        try {
+            return HiddenBeanUtil.getClone(object);
+        } catch (Exception e) {
+            return object;
+        }
+    }
 }
