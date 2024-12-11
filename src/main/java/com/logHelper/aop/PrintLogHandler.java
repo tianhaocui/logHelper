@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.logHelper.annotation.PrintLog;
-import com.logHelper.handler.DefaultOnExceptionHandler;
 import com.logHelper.handler.HiddenFieldModule;
 import com.logHelper.handler.OnExceptionHandler;
 import com.logHelper.util.HiddenBeanUtil;
@@ -17,6 +16,7 @@ import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StopWatch;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -29,12 +29,12 @@ import java.util.List;
 @Aspect
 public class PrintLogHandler {
     private static final Logger logger = LogManager.getContext(true).getLogger(PrintLogHandler.class.getName());
-    private final ObjectMapper mapper = new ObjectMapper();
+    private final ObjectMapper hiddenMapper = new ObjectMapper();
 
     {
         //todo 支持自定义的序列化方式和自定义模块装载
-        mapper.registerModule(new HiddenFieldModule());
-        mapper.registerModule(new JavaTimeModule());
+        hiddenMapper.registerModule(new HiddenFieldModule());
+        hiddenMapper.registerModule(new JavaTimeModule());
     }
 
 
@@ -107,8 +107,7 @@ public class PrintLogHandler {
         try {
             proceed = point.proceed();
         } catch (Exception e) {
-            OnExceptionHandler onExceptionHandler = printLog.onException().getDeclaredConstructor().newInstance();
-            onExceptionHandler.onException(point,e,printLog.exception());
+            onException(printLog, point, e);
             throw e;
         }
         stopWatch.stop();
@@ -124,7 +123,7 @@ public class PrintLogHandler {
 
             if (proceed != null) {
                 sb.append("{},");
-                printLog(printLog, sb.toString(), mapper.writeValueAsString(proceed));
+                printLog(printLog, sb.toString(), hiddenMapper.writeValueAsString(proceed));
             } else {
                 printLog(printLog, sb.toString());
             }
@@ -132,6 +131,17 @@ public class PrintLogHandler {
             logger.debug("printResultLog exception on ", e);
         }
         return proceed;
+    }
+
+    private void onException(PrintLog printLog, ProceedingJoinPoint point, Exception e) throws InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+        OnExceptionHandler onExceptionHandler = printLog.onException().getDeclaredConstructor().newInstance();
+        for (Class<?> c :printLog.exceptException() ) {
+            if (e.getClass().equals(c.getDeclaringClass())) {
+                return;
+            }
+        }
+
+        onExceptionHandler.onException(point, e, printLog.exception());
     }
 
 
@@ -146,7 +156,7 @@ public class PrintLogHandler {
         Object[] args = new Object[objects.length];
         for (int i = 0; i < objects.length; i++) {
             try {
-                args[i] = mapper.writeValueAsString(objects[i]);
+                args[i] = hiddenMapper.writeValueAsString(objects[i]);
             } catch (JsonProcessingException e) {
                 args[i] = attemptClone(objects[i]);
             }

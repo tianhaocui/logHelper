@@ -1,5 +1,6 @@
 package com.logHelper.annotation;
 
+import com.logHelper.exception.NothingException;
 import com.logHelper.handler.DefaultOnExceptionHandler;
 import com.logHelper.handler.OnExceptionHandler;
 
@@ -28,13 +29,15 @@ public @interface PrintLog {
     //是否打印参数
     boolean printParameter() default true;
 
-    // 支持返回值打印脱敏
-    boolean hiddenResult() default false;
     //是否打印返回值
     boolean printResult() default true;
 
+    //异常时执行
     Class<?extends OnExceptionHandler> onException() default DefaultOnExceptionHandler.class;
     enum Level {
         TRACE, DEBUG, INFO, WARN, ERROR
     }
+    //例外
+    Class<? extends Exception>[] exceptException() default {NothingException.class};
+
 }
