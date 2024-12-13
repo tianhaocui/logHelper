@@ -140,7 +140,6 @@ public class PrintLogHandler {
                 return;
             }
         }
-
         onExceptionHandler.onException(point, e, printLog.exception());
     }
 

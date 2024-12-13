@@ -2,6 +2,7 @@ package com.logHelper.handler;
 
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.reflect.MethodSignature;
 
 /**
  * Description:
@@ -15,6 +16,9 @@ public class DefaultOnExceptionHandler extends OnExceptionHandler {
 
     @Override
     public void onException(ProceedingJoinPoint point, Exception e, String[] exception) {
-        log.error(e.getMessage());
+        MethodSignature methodSignature = (MethodSignature) point.getSignature();
+        String packageName = point.getTarget().getClass().getPackage().getName();
+        String name = methodSignature.getMethod().getName();
+        log.error("exception:{},{}",packageName,name,e);
     }
 }
