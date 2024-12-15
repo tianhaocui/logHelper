@@ -1,10 +1,10 @@
 package com.logHelper.configuration;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.PropertySources;
+
 
 /**
- *
+ * todo 一些全局配置
  **/
 @ConfigurationProperties(prefix = "loghelper")
 public class LogHelperProperties {

@@ -30,7 +30,7 @@ public class PrintCurlHandler {
             printCurlLog(request);
         }
         }catch (Exception e) {
-
+            log.info("printCurl error",e);
         }
     }
 
