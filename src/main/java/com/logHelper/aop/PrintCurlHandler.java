@@ -1,9 +1,11 @@
 package com.logHelper.aop;
 
+import com.logHelper.handler.LogHelperTraceHandler;
 import com.logHelper.util.HttpUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 import org.springframework.web.context.request.RequestContextHolder;
@@ -18,6 +20,7 @@ import jakarta.servlet.http.HttpServletRequest;
 @Component
 @Aspect
 @Slf4j
+@Order(5)
 public class PrintCurlHandler {
 
     @Before("@annotation(com.logHelper.annotation.PrintCurl)")
@@ -36,8 +39,10 @@ public class PrintCurlHandler {
 
     private void printCurlLog(HttpServletRequest request) {
         String curl = HttpUtil.getCurl(request);
+        String traceId = LogHelperTraceHandler.getTraceId();
+
         if (curl != null) {
-            log.info(curl);
+            log.info("{},{}", traceId, curl);
         }
     }
 

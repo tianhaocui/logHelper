@@ -15,6 +15,7 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StopWatch;
 
@@ -30,6 +31,7 @@ import java.util.UUID;
  */
 @Component
 @Aspect
+@Order(1)
 public class PrintLogHandler {
     private static final Logger logger = LogManager.getContext(true).getLogger(PrintLogHandler.class.getName());
     private final ObjectMapper hiddenMapper = new ObjectMapper();
