@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.logHelper.annotation.PrintLog;
 import com.logHelper.handler.HiddenFieldModule;
+import com.logHelper.handler.LogHelperTraceHandler;
 import com.logHelper.handler.OnExceptionHandler;
 import com.logHelper.util.HiddenBeanUtil;
 import org.apache.logging.log4j.LogManager;
@@ -44,6 +45,7 @@ public class PrintLogHandler {
     @Around("@annotation(com.logHelper.annotation.PrintLog)")
     public Object printLog(ProceedingJoinPoint point) throws Throwable {
         String traceId = getTraceId();
+        LogHelperTraceHandler.setTraceId(traceId);
         MethodSignature msig = (MethodSignature) point.getSignature();
         Object result = null;
         Object target = point.getTarget();
@@ -56,6 +58,8 @@ public class PrintLogHandler {
             result = printResultLog(traceId,printLog, point);
         } catch (NoSuchMethodException e) {
             logger.debug("printLog exception on ", e);
+        }finally {
+            LogHelperTraceHandler.remove();
         }
         return result;
     }
@@ -72,7 +76,7 @@ public class PrintLogHandler {
         }
         Object[] args = point.getArgs();
         String packageName = point.getTarget().getClass().getPackage().getName() + point.getTarget().getClass().getName();
-        StringBuilder sb = new StringBuilder("[logHelper.traceId:").append(traceId).append("]");
+        StringBuilder sb = new StringBuilder().append(traceId);
         MethodSignature methodSignature = (MethodSignature) point.getSignature();
         getMethodMessage(sb, printLog, methodSignature, packageName);
 
@@ -162,7 +166,7 @@ public class PrintLogHandler {
     }
 
     public String getTraceId() {
-        return UUID.randomUUID().toString().replace("-", "");
+        return "[logHelper.traceId:" + UUID.randomUUID().toString().replace("-", "") + "]";
     }
 
     /**
