@@ -11,7 +11,7 @@ public  class  LogHelperTraceHandler {
    private static TransmittableThreadLocal<String> ttl = new TransmittableThreadLocal<>();
 
     public static String getTraceId() {
-        return ttl.get();
+        return "logHelper.traceId.[" + ttl.get() + "]   ";
     }
     public static void setTraceId(String traceId) {
         ttl.set(traceId);

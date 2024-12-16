@@ -16,9 +16,5 @@ public class DefaultOnExceptionHandler extends OnExceptionHandler {
 
     @Override
     public void onException(ProceedingJoinPoint point, Exception e, String[] exception) {
-        MethodSignature methodSignature = (MethodSignature) point.getSignature();
-        String packageName = point.getTarget().getClass().getPackage().getName();
-        String name = methodSignature.getMethod().getName();
-        log.error("exception:{},{}",packageName,name,e);
     }
 }

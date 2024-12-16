@@ -1,6 +1,5 @@
 package com.logHelper.aop;
 
-import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -9,6 +8,8 @@ import com.logHelper.handler.HiddenFieldModule;
 import com.logHelper.handler.LogHelperTraceHandler;
 import com.logHelper.handler.OnExceptionHandler;
 import com.logHelper.util.HiddenBeanUtil;
+import com.logHelper.util.LogUtil;
+import com.logHelper.util.PointUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -82,16 +83,14 @@ public class PrintLogHandler {
         if (!printLog.printParameter()) {
             return;
         }
+
         Object[] args = point.getArgs();
-        String packageName = point.getTarget().getClass().getPackage().getName() + point.getTarget().getClass().getName();
-        StringBuilder sb = new StringBuilder().append(traceId);
+        StringBuilder sb = new StringBuilder(traceId);
+
         MethodSignature methodSignature = (MethodSignature) point.getSignature();
-        getMethodMessage(sb, printLog, methodSignature, packageName);
-
-        List<Object> argList = new ArrayList<>(Arrays.asList(args));
+        getMethodMessage(sb, printLog,point);
         addParamName(sb, methodSignature.getParameterNames());
-        printLog(printLog, sb, argList.toArray());
-
+        printLog(printLog, sb, args);
     }
 
     private void addParamName(StringBuilder sb, String[] parameterNames) {
@@ -111,14 +110,12 @@ public class PrintLogHandler {
      *
      * @param sb              log context
      * @param printLog        log annotation
-     * @param methodSignature method signature
+     * @param point             point
      */
-    private void getMethodMessage(StringBuilder sb, PrintLog printLog, MethodSignature methodSignature,String packageName) {
-        sb.append("[ ").append(packageName).append(".").append(methodSignature.getMethod().getName()).append("() ]    ");
-        sb.append("logHelper.traceId.[").append(getTraceId()).append("]   ");
-        if (!printLog.remark().isEmpty()) {
-            sb.append("remark:[").append(printLog.remark()).append("]   ");
-        }
+    private void getMethodMessage(StringBuilder sb, PrintLog printLog,ProceedingJoinPoint point) {
+        sb.append(PointUtils.getMethodName(point))
+                .append(getTraceId())
+                .append(printLog.remark().isEmpty() ? "" : "  remark:[").append(printLog.remark()).append(']');
     }
 
     /**
@@ -140,19 +137,17 @@ public class PrintLogHandler {
             throw e;
         }
         stopWatch.stop();
-        logger.info("{}", stopWatch.prettyPrint());
+        logger.info("{},{},{}", PointUtils.getMethodName(point), LogHelperTraceHandler.getTraceId(), stopWatch.prettyPrint());
         if (!printLog.printResult()) {
             // 不需要打印返回值的情况
             return point.proceed();
         }
         try {
             StringBuilder sb = new StringBuilder("[logHelper.traceId:").append(traceId).append("]");
-
-            String packageName = point.getTarget().getClass().getPackage().getName() + point.getTarget().getClass().getName();
-            getMethodMessage(sb, printLog, methodSignature, packageName);
+            getMethodMessage(sb, printLog, point);
 
             if (proceed != null) {
-                sb.append("{},");
+                sb.append("   result:{},");
                 printLog(printLog, sb, proceed);
             } else {
                 printLog(printLog, sb);
@@ -170,7 +165,7 @@ public class PrintLogHandler {
                 return;
             }
         }
-        onExceptionHandler.onException(point, e, printLog.exception());
+        onExceptionHandler.process(point, e, printLog.exception());
     }
 
     /**
