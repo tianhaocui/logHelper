@@ -42,6 +42,12 @@ public class PrintLogHandler {
     }
 
 
+    /**
+     * 从切面打印 log
+     * @param point
+     * @return
+     * @throws Throwable
+     */
     @Around("@annotation(com.logHelper.annotation.PrintLog)")
     public Object printLog(ProceedingJoinPoint point) throws Throwable {
         String traceId = getTraceId();
@@ -165,6 +171,10 @@ public class PrintLogHandler {
         onExceptionHandler.onException(point, e, printLog.exception());
     }
 
+    /**
+     * 获取traceId
+     * @return
+     */
     public String getTraceId() {
         return "[logHelper.traceId:" + UUID.randomUUID().toString().replace("-", "") + "]";
     }
