@@ -19,7 +19,6 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface PrintLog {
     String[] exception() default {};
-
     //日志级别
     Level level() default Level.INFO;
 

@@ -1,5 +1,6 @@
 package com.logHelper.aop;
 
+import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -21,6 +22,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * @author cuitianhao
@@ -35,11 +37,13 @@ public class PrintLogHandler {
         //todo 支持自定义的序列化方式和自定义模块装载
         hiddenMapper.registerModule(new HiddenFieldModule());
         hiddenMapper.registerModule(new JavaTimeModule());
+
     }
 
 
     @Around("@annotation(com.logHelper.annotation.PrintLog)")
     public Object printLog(ProceedingJoinPoint point) throws Throwable {
+        String traceId = getTraceId();
         MethodSignature msig = (MethodSignature) point.getSignature();
         Object result = null;
         Object target = point.getTarget();
@@ -48,8 +52,8 @@ public class PrintLogHandler {
             Method currentMethod = target.getClass().getMethod(msig.getName(), msig.getParameterTypes());
             PrintLog printLog = currentMethod.getAnnotation(PrintLog.class);
             //打印参数日志
-            printParamLog(printLog, point);
-            result = printResultLog(printLog, point);
+            printParamLog(traceId,printLog, point);
+            result = printResultLog(traceId,printLog, point);
         } catch (NoSuchMethodException e) {
             logger.debug("printLog exception on ", e);
         }
@@ -58,17 +62,17 @@ public class PrintLogHandler {
 
     /**
      * 打印参数
-     *
+     * @param traceId 链路id
      * @param printLog 需要打印的log
      * @param point    切点
      */
-    private void printParamLog(PrintLog printLog, ProceedingJoinPoint point) {
+    private void printParamLog(String traceId,PrintLog printLog, ProceedingJoinPoint point) {
         if (!printLog.printParameter()) {
             return;
         }
         Object[] args = point.getArgs();
-        String packageName = point.getTarget().getClass().getPackage().getName();
-        StringBuilder sb = new StringBuilder();
+        String packageName = point.getTarget().getClass().getPackage().getName() + point.getTarget().getClass().getName();
+        StringBuilder sb = new StringBuilder("[logHelper.traceId:").append(traceId).append("]");
         MethodSignature methodSignature = (MethodSignature) point.getSignature();
         getMethodMessage(sb, printLog, methodSignature, packageName);
 
@@ -97,8 +101,9 @@ public class PrintLogHandler {
      * @param printLog        log annotation
      * @param methodSignature method signature
      */
-    private void getMethodMessage(StringBuilder sb, PrintLog printLog, MethodSignature methodSignature, String packageName) {
+    private void getMethodMessage(StringBuilder sb, PrintLog printLog, MethodSignature methodSignature,String packageName) {
         sb.append("[ ").append(packageName).append(".").append(methodSignature.getMethod().getName()).append("() ]    ");
+        sb.append("logHelper.traceId.[").append(getTraceId()).append("]   ");
         if (!printLog.remark().isEmpty()) {
             sb.append("remark:[").append(printLog.remark()).append("]   ");
         }
@@ -110,7 +115,7 @@ public class PrintLogHandler {
      * @param printLog log annotation
      * @param point    point
      */
-    private Object printResultLog(PrintLog printLog, ProceedingJoinPoint point) throws Throwable {
+    private Object printResultLog(String traceId ,PrintLog printLog, ProceedingJoinPoint point) throws Throwable {
 
         MethodSignature methodSignature = (MethodSignature) point.getSignature();
         StopWatch stopWatch = new StopWatch(methodSignature.getMethod().getName());
@@ -129,13 +134,14 @@ public class PrintLogHandler {
             return point.proceed();
         }
         try {
-            StringBuilder sb = new StringBuilder();
-            String packageName = point.getTarget().getClass().getPackage().getName();
+            StringBuilder sb = new StringBuilder("[logHelper.traceId:").append(traceId).append("]");
+
+            String packageName = point.getTarget().getClass().getPackage().getName() + point.getTarget().getClass().getName();
             getMethodMessage(sb, printLog, methodSignature, packageName);
 
             if (proceed != null) {
                 sb.append("{},");
-                printLog(printLog, sb, hiddenMapper.writeValueAsString(proceed));
+                printLog(printLog, sb, proceed);
             } else {
                 printLog(printLog, sb);
             }
@@ -155,6 +161,9 @@ public class PrintLogHandler {
         onExceptionHandler.onException(point, e, printLog.exception());
     }
 
+    public String getTraceId() {
+        return UUID.randomUUID().toString().replace("-", "");
+    }
 
     /**
      * 打印日志
