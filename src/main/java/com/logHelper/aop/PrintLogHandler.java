@@ -73,10 +73,22 @@ public class PrintLogHandler {
         getMethodMessage(sb, printLog, methodSignature, packageName);
 
         List<Object> argList = new ArrayList<>(Arrays.asList(args));
-        printLog(printLog, sb.toString(), argList.toArray());
+        addParamName(sb, methodSignature.getParameterNames());
+        printLog(printLog, sb, argList.toArray());
 
     }
 
+    private void addParamName(StringBuilder sb, String[] parameterNames) {
+        if (parameterNames == null || parameterNames.length == 0) {
+            return;
+        }
+        for (int i = 0; i < parameterNames.length; i++) {
+            sb.append(parameterNames[i]).append(":").append("{}");
+            if (i < parameterNames.length - 1) {
+                sb.append(",");
+            }
+        }
+    }
 
     /**
      * 添加方法信息和remark
@@ -88,7 +100,7 @@ public class PrintLogHandler {
     private void getMethodMessage(StringBuilder sb, PrintLog printLog, MethodSignature methodSignature, String packageName) {
         sb.append("[ ").append(packageName).append(".").append(methodSignature.getMethod().getName()).append("() ]    ");
         if (!printLog.remark().isEmpty()) {
-            sb.append("remark.[").append(printLog.remark()).append("]   ");
+            sb.append("remark:[").append(printLog.remark()).append("]   ");
         }
     }
 
@@ -123,9 +135,9 @@ public class PrintLogHandler {
 
             if (proceed != null) {
                 sb.append("{},");
-                printLog(printLog, sb.toString(), hiddenMapper.writeValueAsString(proceed));
+                printLog(printLog, sb, hiddenMapper.writeValueAsString(proceed));
             } else {
-                printLog(printLog, sb.toString());
+                printLog(printLog, sb);
             }
         } catch (Exception e) {
             logger.debug("printResultLog exception on ", e);
@@ -135,7 +147,7 @@ public class PrintLogHandler {
 
     private void onException(PrintLog printLog, ProceedingJoinPoint point, Exception e) throws InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
         OnExceptionHandler onExceptionHandler = printLog.onException().getDeclaredConstructor().newInstance();
-        for (Class<?> c :printLog.exceptException() ) {
+        for (Class<?> c : printLog.exceptException()) {
             if (e.getClass().equals(c.getDeclaringClass())) {
                 return;
             }
@@ -150,7 +162,7 @@ public class PrintLogHandler {
      * @param printLog   log annotation
      * @param logContext log context
      */
-    private void printLog(PrintLog printLog, String logContext, Object... objects) {
+    private void printLog(PrintLog printLog, StringBuilder logContext, Object... objects) {
         if (objects == null) return;
         Object[] args = new Object[objects.length];
         for (int i = 0; i < objects.length; i++) {
@@ -163,20 +175,20 @@ public class PrintLogHandler {
 
         switch (printLog.level()) {
             case TRACE:
-                logger.trace(logContext, args);
+                logger.trace(logContext.toString(), args);
                 break;
             case DEBUG:
-                logger.debug(logContext, args);
+                logger.debug(logContext.toString(), args);
                 break;
             case WARN:
-                logger.warn(logContext, args);
+                logger.warn(logContext.toString(), args);
                 break;
             case ERROR:
-                logger.error(logContext, args);
+                logger.error(logContext.toString(), args);
                 break;
             case INFO:
             default:
-                logger.info(logContext, args);
+                logger.info(logContext.toString(), args);
         }
     }
 
