@@ -9,7 +9,8 @@ import org.aspectj.lang.ProceedingJoinPoint;
  */
 public class PointUtils {
     public static String getMethodName(ProceedingJoinPoint point) {
-        return "[ " + point.getTarget().getClass().getPackage().getName() + point.getTarget().getClass().getName() + "() ]    ";
+        Class<?> clazz = point.getTarget().getClass();
+        return "[" + clazz.getName() + "." + point.getSignature().getName() + "() ] ";
     }
 
 }

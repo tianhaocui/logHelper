@@ -10,8 +10,6 @@ import com.logHelper.handler.OnExceptionHandler;
 import com.logHelper.util.HiddenBeanUtil;
 import com.logHelper.util.LogUtil;
 import com.logHelper.util.PointUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -22,10 +20,6 @@ import org.springframework.util.StopWatch;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
 
 /**
  * @author cuitianhao
@@ -34,27 +28,25 @@ import java.util.UUID;
 @Aspect
 @Order(1)
 public class PrintLogHandler {
-    private static final Logger logger = LogManager.getContext(true).getLogger(PrintLogHandler.class.getName());
     private final ObjectMapper hiddenMapper = new ObjectMapper();
 
     {
         //todo 支持自定义的序列化方式和自定义模块装载
         hiddenMapper.registerModule(new HiddenFieldModule());
         hiddenMapper.registerModule(new JavaTimeModule());
-
     }
 
 
     /**
      * 从切面打印 log
+     *
      * @param point
      * @return
      * @throws Throwable
      */
     @Around("@annotation(com.logHelper.annotation.PrintLog)")
     public Object printLog(ProceedingJoinPoint point) throws Throwable {
-        String traceId = getTraceId();
-        LogHelperTraceHandler.setTraceId(traceId);
+        LogHelperTraceHandler.setTraceId();
         MethodSignature msig = (MethodSignature) point.getSignature();
         Object result = null;
         Object target = point.getTarget();
@@ -63,11 +55,11 @@ public class PrintLogHandler {
             Method currentMethod = target.getClass().getMethod(msig.getName(), msig.getParameterTypes());
             PrintLog printLog = currentMethod.getAnnotation(PrintLog.class);
             //打印参数日志
-            printParamLog(traceId,printLog, point);
-            result = printResultLog(traceId,printLog, point);
+            printParamLog(printLog, point);
+            result = printResultLog(printLog, point);
         } catch (NoSuchMethodException e) {
-            logger.debug("printLog exception on ", e);
-        }finally {
+            LogUtil.debug("printLog exception on ", e);
+        } finally {
             LogHelperTraceHandler.remove();
         }
         return result;
@@ -75,20 +67,18 @@ public class PrintLogHandler {
 
     /**
      * 打印参数
-     * @param traceId 链路id
+     *
      * @param printLog 需要打印的log
      * @param point    切点
      */
-    private void printParamLog(String traceId,PrintLog printLog, ProceedingJoinPoint point) {
+    private void printParamLog(PrintLog printLog, ProceedingJoinPoint point) {
         if (!printLog.printParameter()) {
             return;
         }
-
         Object[] args = point.getArgs();
-        StringBuilder sb = new StringBuilder(traceId);
-
+        StringBuilder sb = new StringBuilder();
         MethodSignature methodSignature = (MethodSignature) point.getSignature();
-        getMethodMessage(sb, printLog,point);
+        getMethodMessage(sb, printLog, point);
         addParamName(sb, methodSignature.getParameterNames());
         printLog(printLog, sb, args);
     }
@@ -108,14 +98,16 @@ public class PrintLogHandler {
     /**
      * 添加方法信息和remark
      *
-     * @param sb              log context
-     * @param printLog        log annotation
-     * @param point             point
+     * @param sb       log context
+     * @param printLog log annotation
+     * @param point    point
      */
-    private void getMethodMessage(StringBuilder sb, PrintLog printLog,ProceedingJoinPoint point) {
-        sb.append(PointUtils.getMethodName(point))
-                .append(getTraceId())
-                .append(printLog.remark().isEmpty() ? "" : "  remark:[").append(printLog.remark()).append(']');
+    private void getMethodMessage(StringBuilder sb, PrintLog printLog, ProceedingJoinPoint point) {
+        sb.append(PointUtils.getMethodName(point));
+
+        if (!printLog.remark().isEmpty()) {
+            sb.append("  remark:[").append(printLog.remark()).append(']');
+        }
     }
 
     /**
@@ -124,7 +116,7 @@ public class PrintLogHandler {
      * @param printLog log annotation
      * @param point    point
      */
-    private Object printResultLog(String traceId ,PrintLog printLog, ProceedingJoinPoint point) throws Throwable {
+    private Object printResultLog(PrintLog printLog, ProceedingJoinPoint point) throws Throwable {
 
         MethodSignature methodSignature = (MethodSignature) point.getSignature();
         StopWatch stopWatch = new StopWatch(methodSignature.getMethod().getName());
@@ -132,28 +124,27 @@ public class PrintLogHandler {
         Object proceed;
         try {
             proceed = point.proceed();
+            stopWatch.stop();
+            LogUtil.info("{}\r\n{}", PointUtils.getMethodName(point), stopWatch.prettyPrint());
         } catch (Exception e) {
             onException(printLog, point, e);
             throw e;
         }
-        stopWatch.stop();
-        logger.info("{},{},{}", PointUtils.getMethodName(point), LogHelperTraceHandler.getTraceId(), stopWatch.prettyPrint());
         if (!printLog.printResult()) {
             // 不需要打印返回值的情况
             return point.proceed();
         }
         try {
-            StringBuilder sb = new StringBuilder("[logHelper.traceId:").append(traceId).append("]");
+            StringBuilder sb = new StringBuilder();
             getMethodMessage(sb, printLog, point);
-
             if (proceed != null) {
-                sb.append("   result:{},");
+                sb.append(" result:{},");
                 printLog(printLog, sb, proceed);
             } else {
                 printLog(printLog, sb);
             }
         } catch (Exception e) {
-            logger.debug("printResultLog exception on ", e);
+            LogUtil.debug("printResultLog exception on ", e);
         }
         return proceed;
     }
@@ -168,13 +159,6 @@ public class PrintLogHandler {
         onExceptionHandler.process(point, e, printLog.exception());
     }
 
-    /**
-     * 获取traceId
-     * @return
-     */
-    public String getTraceId() {
-        return "[logHelper.traceId:" + UUID.randomUUID().toString().replace("-", "") + "]";
-    }
 
     /**
      * 打印日志
@@ -195,20 +179,20 @@ public class PrintLogHandler {
 
         switch (printLog.level()) {
             case TRACE:
-                logger.trace(logContext.toString(), args);
+                LogUtil.trace(logContext.toString(), args);
                 break;
             case DEBUG:
-                logger.debug(logContext.toString(), args);
+                LogUtil.debug(logContext.toString(), args);
                 break;
             case WARN:
-                logger.warn(logContext.toString(), args);
+                LogUtil.warn(logContext.toString(), args);
                 break;
             case ERROR:
-                logger.error(logContext.toString(), args);
+                LogUtil.error(logContext.toString(), args);
                 break;
             case INFO:
             default:
-                logger.info(logContext.toString(), args);
+                LogUtil.info(logContext.toString(), args);
         }
     }
 
@@ -219,4 +203,5 @@ public class PrintLogHandler {
             return object;
         }
     }
+
 }

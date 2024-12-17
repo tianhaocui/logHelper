@@ -1,7 +1,7 @@
 package com.logHelper.aop;
 
-import com.logHelper.handler.LogHelperTraceHandler;
 import com.logHelper.util.HttpUtil;
+import com.logHelper.util.LogUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
@@ -26,26 +26,24 @@ public class PrintCurlHandler {
     @Before("@annotation(com.logHelper.annotation.PrintCurl)")
     public void printLog() {
         try {
-        ServletRequestAttributes requestAttributes = (ServletRequestAttributes)RequestContextHolder.getRequestAttributes();
-        // get the request
-        if (requestAttributes != null) {
-            HttpServletRequest request = requestAttributes.getRequest();
-            printCurlLog(request);
-        }
-        }catch (Exception e) {
-            log.info("printCurl error",e);
+            ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+            // get the request
+            if (requestAttributes != null) {
+                HttpServletRequest request = requestAttributes.getRequest();
+                printCurlLog(request);
+            }
+        } catch (Exception e) {
+            LogUtil.debug("printCurl error", e);
         }
     }
 
     private void printCurlLog(HttpServletRequest request) {
         String curl = HttpUtil.getCurl(request);
-        String traceId = LogHelperTraceHandler.getTraceId();
 
         if (curl != null) {
-            log.info("{},{}", traceId, curl);
+            LogUtil.info("{}", curl);
         }
     }
-
 
 
 }
