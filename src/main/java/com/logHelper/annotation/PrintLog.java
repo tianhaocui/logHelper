@@ -18,23 +18,45 @@ import java.lang.annotation.Target;
 @Target({ElementType.PARAMETER, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface PrintLog {
+    /**
+     * 异常时不执行onException的类型
+     */
     String[] exception() default {};
-    //日志级别
+    /**
+     * 日志级别
+     */
     Level level() default Level.INFO;
 
-    //备注
+    /**
+     * 备注
+     */
     String remark() default "";
 
-    //是否打印参数
+    /**
+     * 是否打印参数
+     */
     boolean printParameter() default true;
 
-    //是否打印返回值
+    /**
+     * 是否打印返回值
+     */
     boolean printResult() default true;
 
-    //异常时执行
+    /**
+     * 异常时执行
+     */
     Class<?extends OnExceptionHandler> onException() default DefaultOnExceptionHandler.class;
     enum Level {
-        TRACE, DEBUG, INFO, WARN, ERROR
+        //trace
+        TRACE,
+        //debug
+        DEBUG,
+        //info
+        INFO,
+        //warn
+        WARN,
+        //error
+        ERROR
     }
     //例外
     Class<? extends Exception>[] exceptException() default {NothingException.class};

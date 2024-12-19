@@ -12,8 +12,12 @@ import org.aspectj.lang.reflect.MethodSignature;
 @Slf4j
 public class DefaultOnExceptionHandler extends OnExceptionHandler {
 
-    public static final DefaultOnExceptionHandler INSTANCE = new DefaultOnExceptionHandler();
-
+    /**
+     * 异常执行方法
+     * @param point 切点
+     * @param e 异常
+     * @param exception 排除的异常类型
+     */
     @Override
     public void onException(ProceedingJoinPoint point, Exception e, String[] exception) {
     }

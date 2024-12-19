@@ -10,23 +10,47 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 public class LogUtil {
-
+    /**
+     *  获取logger
+     * @return log name
+     */
     public static String getName() {
         return log.getName();
     }
 
+    /**
+     *  is trace enabled
+     *
+     * @return  is trace enabled
+     */
     public static boolean isTraceEnabled() {
         return log.isTraceEnabled();
     }
 
+    /**
+     *  trace
+     *
+     * @param message message
+     */
     public static void trace(String message) {
         log.trace(LogHelperTraceHandler.getTraceLog() + message);
     }
-
+    /**
+     *  trace
+     *
+     * @param format format
+     * @param arg
+     */
     public static void trace(String format, Object arg) {
         log.trace(LogHelperTraceHandler.getTraceLog() + format, arg);
     }
 
+    /**
+     *
+     * @param format format
+     * @param arg1 arg1
+     * @param arg2 arg2
+     */
     public static void trace(String format, Object arg1, Object arg2) {
         log.trace(LogHelperTraceHandler.getTraceLog() + format, arg1, arg2);
     }

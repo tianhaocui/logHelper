@@ -10,9 +10,7 @@ import java.lang.reflect.Field;
 import java.util.*;
 
 /**
- * 
- *  脱敏工具类
- * 
+ * 脱敏工具类
  * author: cuitianhao
  **/
 public class HiddenBeanUtil {
@@ -43,9 +41,12 @@ public class HiddenBeanUtil {
     /**
      * 获取脱敏后的bean
      *
-     * @param javaBean
-     * @return
+     * @param javaBean 原本bean
+     * @param <T>      T
+     * @throws IllegalAccessException exception
+     * @return 脱敏后数据
      */
+    @SuppressWarnings("unchecked")
     public static <T> T getClone(T javaBean) throws IllegalAccessException {
         T clone = null;
         if (null != javaBean) {
@@ -73,11 +74,11 @@ public class HiddenBeanUtil {
     /**
      * 对需要脱敏的字段进行转化
      *
-     * @param fields
-     * @param javaBean
-     * @param referenceCounter
-     * @throws IllegalArgumentException
-     * @throws IllegalAccessException
+     * @param fields           字段
+     * @param javaBean         对象
+     * @param referenceCounter 计数器
+     * @throws IllegalArgumentException 异常
+     * @throws IllegalAccessException   异常
      */
     private static void replace(Field[] fields, Object javaBean, Set<Integer> referenceCounter) throws IllegalArgumentException, IllegalAccessException {
         if (null != fields) {
@@ -146,10 +147,10 @@ public class HiddenBeanUtil {
     /**
      * 排除jdk字段
      *
-     * @param clazz
-     * @param value
-     * @param referenceCounter
-     * @return
+     * @param clazz            类型
+     * @param value            值
+     * @param referenceCounter 计数器
+     * @return 是否需要脱敏
      */
     private static boolean isNotGeneralType(Class<?> clazz, Object value, Set<Integer> referenceCounter) {
         return !clazz.isPrimitive()
@@ -166,9 +167,9 @@ public class HiddenBeanUtil {
      * 脱敏操作（按照规则转化需要脱敏的字段并设置新值）
      *
      * @param javaBean 对象
-     * @param field 字段
-     * @param value 值
-     * @throws IllegalAccessException
+     * @param field    字段
+     * @param value    值
+     * @throws IllegalAccessException 异常
      */
     private static void setNewValueForField(Object javaBean, Field field, Object value) throws IllegalAccessException {
         //处理自身的属性
@@ -203,8 +204,8 @@ public class HiddenBeanUtil {
     /**
      * 身份证号
      *
-     * @param id
-     * @return
+     * @param id 身份证号
+     * @return 脱敏后的身份证号
      */
     private static String idCard(String id) {
         if (StringUtils.isBlank(id)) {
@@ -216,8 +217,8 @@ public class HiddenBeanUtil {
     /**
      * 手机号
      *
-     * @param num
-     * @return
+     * @param num 手机号
+     * @return 脱敏后的手机号
      */
     private static String phone(String num) {
         if (StringUtils.isBlank(num)) {
@@ -229,8 +230,8 @@ public class HiddenBeanUtil {
     /**
      * 账号脱敏
      *
-     * @param account
-     * @return
+     * @param account 账号
+     * @return 脱敏后的账号
      */
     private static String account(String account) {
         if (StringUtils.isBlank(account)) {
@@ -242,8 +243,8 @@ public class HiddenBeanUtil {
     /**
      * 自定义正则替换
      *
-     * @param data
-     * @return
+     * @param data 数据
+     * @return 脱敏后的数据
      */
     private static String reg(String data, String reg) {
         if (StringUtils.isBlank(data)) {
@@ -255,8 +256,8 @@ public class HiddenBeanUtil {
     /**
      * 电子邮箱
      *
-     * @param email
-     * @return
+     * @param email 电子邮箱
+     * @return 脱敏后的邮箱
      */
     private static String email(String email) {
         if (StringUtils.isBlank(email)) {
@@ -270,6 +271,14 @@ public class HiddenBeanUtil {
         }
     }
 
+    /**
+     * 脱敏
+     *
+     * @param data 数据
+     * @param type 脱敏类型
+     * @param reg  reg
+     * @return 脱敏后的数据
+     */
     public static String replace(String data, Hidden.DataType type, String reg) {
         switch (type) {
             case ID_CARD: {

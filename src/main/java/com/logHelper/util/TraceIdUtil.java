@@ -10,7 +10,7 @@ import java.util.UUID;
 public class TraceIdUtil {
     /**
      * 获取traceId
-     * @return
+     * @return traceId
      */
     public static String getTraceId() {
         return UUID.randomUUID().toString().replace("-", "") ;

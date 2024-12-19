@@ -41,8 +41,8 @@ public class PrintLogHandler {
      * 从切面打印 log
      *
      * @param point
-     * @return
-     * @throws Throwable
+     * @return 方法返回值
+     * @throws Throwable 错误
      */
     @Around("@annotation(com.logHelper.annotation.PrintLog)")
     public Object printLog(ProceedingJoinPoint point) throws Throwable {

@@ -9,6 +9,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
 
+/**
+ * http util
+ */
 public class HttpUtil {
     private static final String FORMAT_HEADER = "-H \"%1$s:%2$s\"";
     private static final String FORMAT_METHOD = "-X %1$s";
@@ -16,6 +19,11 @@ public class HttpUtil {
     private static final String FORMAT_URL = "\"%1$s\"";
     private static final String CONTENT_TYPE = "Content-Type";
 
+    /**
+     * 获取curl
+     * @param request 请求
+     * @return curl
+     */
     public static String getCurl(HttpServletRequest request) {
         if (request == null) {
             return null;

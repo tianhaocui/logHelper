@@ -15,13 +15,15 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Hidden {
 
+    /**
+     * @return 数据类型
+     */
     DataType dataType() default DataType.PHONE;
 
     /**
      * Specifies the regular expression to use for matching.
      * By default, it matches any non-whitespace character.
-     *
-     * @return the regular expression
+     * @return 正则
      */
     String regexp() default "\\S";
 
@@ -29,6 +31,25 @@ public @interface Hidden {
      * 数据类型
      */
     enum DataType {
-        PHONE, EMAIL, ID_CARD, REG, ACCOUNT;
+        /**
+         * 手机号13位
+         */
+        PHONE,
+        /**
+         * 邮箱
+         */
+        EMAIL,
+        /**
+         * 中国身份证
+         */
+        ID_CARD,
+        /**
+         * 自定义正则
+         */
+        REG,
+        /**
+         * 帐号
+         */
+        ACCOUNT;
     }
 }
