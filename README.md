@@ -27,7 +27,7 @@
 字段注解 脱敏打印
 
 
-jdk8及以下使用-java8后缀的版本
+#### jdk8及以下使用-java8后缀的版本
 ```xml
          <dependency>
             <groupId>io.github.tianhaocui</groupId>
@@ -35,7 +35,7 @@ jdk8及以下使用-java8后缀的版本
             <version>2.0.6-java8</version>
         </dependency>
 ```
-无-java8版本默认为高版本
+#### 无-java8版本默认为高版本
 ```xml
          <dependency>
             <groupId>io.github.tianhaocui</groupId>
