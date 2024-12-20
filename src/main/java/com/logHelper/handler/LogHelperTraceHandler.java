@@ -33,6 +33,9 @@ public class LogHelperTraceHandler {
      * 设置traceId
      */
     public static void setTraceId() {
+        if (ttl.get() != null) {
+            return;
+        }
         ttl.set(TraceIdUtil.getTraceId());
     }
 
