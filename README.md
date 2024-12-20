@@ -5,9 +5,8 @@
 
 # logHelper
 
-<img width="1351" alt="image" src="https://user-images.githubusercontent.com/54015884/185789440-54b554de-bca0-424e-9c34-ae23115b7073.png">
 
-### 启动类需要添加@EnableLogHelper
+### 启动类添加@EnableLogHelper
 
 #### @PrintCurl   
  打印curl
@@ -26,6 +25,19 @@
 * printResult    是否打印返回值
 #### @Hidden
 字段注解 脱敏打印
- 
-
-
+jdk8及以下使用-java8后缀的版本
+```xml
+         <dependency>
+            <groupId>io.github.tianhaocui</groupId>
+            <artifactId>loghelper-spring-boot-start</artifactId>
+            <version>2.0.6-java8</version>
+        </dependency>
+```
+无-java8版本默认为高版本
+```xml
+         <dependency>
+            <groupId>io.github.tianhaocui</groupId>
+            <artifactId>loghelper-spring-boot-start</artifactId>
+            <version>2.0.6-pre</version>
+        </dependency>
+```
