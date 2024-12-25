@@ -6,7 +6,6 @@ import java.util.*;
 /**
  * 
  *  对象、属性处理
- * 
  * author: cuitianhao
  **/
 public class ObjUtils {

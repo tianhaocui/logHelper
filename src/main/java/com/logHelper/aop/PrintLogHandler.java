@@ -26,7 +26,7 @@ import java.lang.reflect.Method;
  */
 @Component
 @Aspect
-@Order(1)
+@Order(Integer.MAX_VALUE - 1)
 public class PrintLogHandler {
     private final ObjectMapper hiddenMapper = new ObjectMapper();
 

@@ -20,7 +20,7 @@ import jakarta.servlet.http.HttpServletRequest;
 @Component
 @Aspect
 @Slf4j
-@Order(5)
+@Order()
 public class PrintCurlHandler {
 
     @Before("@annotation(com.logHelper.annotation.PrintCurl)")
