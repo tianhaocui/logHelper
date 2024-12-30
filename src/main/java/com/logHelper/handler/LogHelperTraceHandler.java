@@ -9,7 +9,7 @@ import com.logHelper.util.TraceIdUtil;
  * Created Date: 2024/12/16
  */
 public class LogHelperTraceHandler {
-    private static TransmittableThreadLocal<String> ttl = new TransmittableThreadLocal<>();
+    private static final TransmittableThreadLocal<String> ttl = new TransmittableThreadLocal<>();
 
     /**
      * 获取traceId
@@ -26,7 +26,11 @@ public class LogHelperTraceHandler {
      * @return traceId log
      */
     public static String getTraceLog() {
-        return "[logHelper.traceId:" + getTraceId() + "] ";
+        String traceId = getTraceId();
+        if (traceId == null) {
+            return "";
+        }
+        return "[logHelper.traceId:" + traceId + "] ";
     }
 
     /**
