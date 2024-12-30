@@ -21,7 +21,12 @@ public @interface PrintLog {
     /**
      * 异常时不执行onException的类型
      */
-    String[] exception() default {};
+    Class<? extends Exception>[] unException() default {};
+
+    /**
+     * 异常时候的 参数
+     */
+    String [] exceptionParam() default {};
     /**
      * 日志级别
      */

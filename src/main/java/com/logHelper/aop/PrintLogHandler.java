@@ -156,7 +156,7 @@ public class PrintLogHandler {
                 return;
             }
         }
-        onExceptionHandler.process(point, e, printLog.exception());
+        onExceptionHandler.process(point, e, printLog.unException(), printLog.exceptionParam());
     }
 
 

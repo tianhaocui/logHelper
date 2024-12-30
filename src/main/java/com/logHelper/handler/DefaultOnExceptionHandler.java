@@ -18,6 +18,6 @@ public class DefaultOnExceptionHandler extends OnExceptionHandler {
      * @param exception 排除的异常类型
      */
     @Override
-    public void onException(ProceedingJoinPoint point, Exception e, String[] exception) {
+    public void onException(ProceedingJoinPoint point, Exception e, Class<? extends Exception>[] exception,String [] exceptionParam) {
     }
 }

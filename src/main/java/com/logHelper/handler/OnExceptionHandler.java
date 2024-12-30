@@ -15,22 +15,32 @@ import org.aspectj.lang.ProceedingJoinPoint;
 public abstract class OnExceptionHandler {
     /**
      * 执行异常处理
-     * @param point 切点
-     * @param e 异常
+     *
+     * @param point     切点
+     * @param e         异常
      * @param exception 排除的异常类型
      */
-    public void process(ProceedingJoinPoint point, Exception e, String[] exception) {
-        String sb = PointUtils.getMethodName(point) ;
+    public void process(ProceedingJoinPoint point, Exception e, Class<? extends Exception>[] exception, String[] exceptionParam) {
+        String sb = PointUtils.getMethodName(point);
         LogUtil.error(sb);
-        onException(point, e, exception);
+        if (exception != null) {
+            for (Class<? extends Exception> ex : exception) {
+                if (e.getClass().equals(ex)) {
+                    return;
+                }
+            }
+        }
+        this.onException(point, e, exception, exceptionParam);
+
     }
 
     /**
      * 异常执行方法
-     * @param point 切点
-     * @param e 异常
+     *
+     * @param point     切点
+     * @param e         异常
      * @param exception 排除的异常类型
      */
-    public abstract void onException(ProceedingJoinPoint point, Exception e, String[] exception);
+    public abstract void onException(ProceedingJoinPoint point, Exception e, Class<? extends Exception>[] exception, String[] exceptionParam);
 
 }
