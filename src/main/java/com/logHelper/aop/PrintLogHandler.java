@@ -40,7 +40,7 @@ public class PrintLogHandler {
     /**
      * 从切面打印 log
      *
-     * @param point
+     * @param point 切点
      * @return 方法返回值
      * @throws Throwable 错误
      */

@@ -14,8 +14,8 @@ public class ObjUtils {
     /**
      * 获取包括所有的属性
      *
-     * @param objSource
-     * @return
+     * @param objSource 对象
+     * @return  属性
      */
     public static Field[] getAllFields(Object objSource) {
         //获得当前类的所有属性

@@ -20,6 +20,8 @@ import java.lang.annotation.Target;
 public @interface PrintLog {
     /**
      * 异常时不执行onException的类型
+     *
+     * @return 异常时不执行onException的类型
      */
     Class<? extends Exception>[] unException() default {};
 
@@ -29,41 +31,65 @@ public @interface PrintLog {
     String [] exceptionParam() default {};
     /**
      * 日志级别
+     * @return 日志级别
      */
     Level level() default Level.INFO;
 
     /**
      * 备注
+     * @return 备注
      */
     String remark() default "";
 
     /**
      * 是否打印参数
+     * @return 是否打印参数
      */
     boolean printParameter() default true;
 
     /**
      * 是否打印返回值
+     * @return 是否打印返回值
      */
     boolean printResult() default true;
 
     /**
      * 异常时执行
+     *
+     * @return 异常时执行
      */
     Class<?extends OnExceptionHandler> onException() default DefaultOnExceptionHandler.class;
+
+    /**
+     * 日志级别
+     *
+     */
     enum Level {
-        //trace
+        /**
+         * trace
+         */
         TRACE,
-        //debug
+        /**
+         * debug
+         */
         DEBUG,
-        //info
+        /**
+         * info
+         */
         INFO,
-        //warn
+        /**
+         * warn
+         */
         WARN,
-        //error
+        /**
+         * error
+         */
         ERROR
     }
-    //例外
+
+    /**
+     * @return 例外
+     */
     Class<? extends Exception>[] exceptException() default {NothingException.class};
 
 }

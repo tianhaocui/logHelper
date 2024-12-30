@@ -23,6 +23,9 @@ import jakarta.servlet.http.HttpServletRequest;
 @Order()
 public class PrintCurlHandler {
 
+    /**
+     * 打印日志
+     */
     @Before("@annotation(com.logHelper.annotation.PrintCurl)")
     public void printLog() {
         try {
