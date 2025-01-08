@@ -10,11 +10,15 @@ import com.logHelper.handler.OnExceptionHandler;
 import com.logHelper.util.HiddenBeanUtil;
 import com.logHelper.util.LogUtil;
 import com.logHelper.util.PointUtils;
+import io.micrometer.common.util.StringUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.core.annotation.Order;
+import org.springframework.expression.ExpressionParser;
+import org.springframework.expression.spel.standard.SpelExpressionParser;
+import org.springframework.expression.spel.support.StandardEvaluationContext;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StopWatch;
 
@@ -50,10 +54,12 @@ public class PrintLogHandler {
         MethodSignature msig = (MethodSignature) point.getSignature();
         Object result = null;
         Object target = point.getTarget();
+
         try {
             //获取当前方法
             Method currentMethod = target.getClass().getMethod(msig.getName(), msig.getParameterTypes());
             PrintLog printLog = currentMethod.getAnnotation(PrintLog.class);
+
             //打印参数日志
             printParamLog(printLog, point);
             result = printResultLog(printLog, point);
@@ -63,6 +69,25 @@ public class PrintLogHandler {
             LogHelperTraceHandler.remove();
         }
         return result;
+    }
+
+    private Object extractedValue(ProceedingJoinPoint point, MethodSignature msig, PrintLog printLog) {
+        if (StringUtils.isEmpty(printLog.exceptionValue())) {
+            return null;
+        }
+        // EL解析器上下文
+        ExpressionParser parser = new SpelExpressionParser();
+        StandardEvaluationContext context = new StandardEvaluationContext();
+        String[] parameterNames = msig.getParameterNames(); // 方法参数名称
+        Object[] args = point.getArgs(); // 方法参数值
+
+        // 将参数值绑定到上下文中
+        for (int i = 0; i < parameterNames.length; i++) {
+            context.setVariable(parameterNames[i], args[i]);
+        }
+
+        // 解析表达式
+        return parser.parseExpression(printLog.exceptionValue()).getValue(context);
     }
 
     /**
@@ -127,7 +152,7 @@ public class PrintLogHandler {
             stopWatch.stop();
             LogUtil.info("{}\r\n{}", PointUtils.getMethodName(point), stopWatch.prettyPrint());
         } catch (Exception e) {
-            onException(printLog, point, e);
+            onException(printLog, point, e, extractedValue(point, methodSignature, printLog));
             throw e;
         }
         if (!printLog.printResult()) {
@@ -141,6 +166,7 @@ public class PrintLogHandler {
                 sb.append(" result:{},");
                 printLog(printLog, sb, proceed);
             } else {
+                sb.append("nil result");
                 printLog(printLog, sb);
             }
         } catch (Exception e) {
@@ -149,14 +175,14 @@ public class PrintLogHandler {
         return proceed;
     }
 
-    private void onException(PrintLog printLog, ProceedingJoinPoint point, Exception e) throws InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+    private void onException(PrintLog printLog, ProceedingJoinPoint point, Exception e, Object o) throws InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
         OnExceptionHandler onExceptionHandler = printLog.onException().getDeclaredConstructor().newInstance();
         for (Class<?> c : printLog.exceptException()) {
             if (e.getClass().equals(c.getDeclaringClass())) {
                 return;
             }
         }
-        onExceptionHandler.process(point, e, printLog.unException(), printLog.exceptionParam());
+        onExceptionHandler.process(point, e, printLog.unException(), printLog.exceptionParam(), o);
     }
 
 

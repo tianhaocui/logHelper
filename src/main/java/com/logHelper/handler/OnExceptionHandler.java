@@ -20,7 +20,7 @@ public abstract class OnExceptionHandler {
      * @param e         异常
      * @param exception 排除的异常类型
      */
-    public void process(ProceedingJoinPoint point, Exception e, Class<? extends Exception>[] exception, String[] exceptionParam) {
+    public void process(ProceedingJoinPoint point, Exception e, Class<? extends Exception>[] exception, String[] exceptionParam, Object o) {
         String sb = PointUtils.getMethodName(point);
         LogUtil.error(sb);
         if (exception != null) {
@@ -30,7 +30,7 @@ public abstract class OnExceptionHandler {
                 }
             }
         }
-        this.onException(point, e, exception, exceptionParam);
+        this.onException(point, e, exception, exceptionParam, o);
 
     }
 
@@ -41,6 +41,6 @@ public abstract class OnExceptionHandler {
      * @param e         异常
      * @param exception 排除的异常类型
      */
-    public abstract void onException(ProceedingJoinPoint point, Exception e, Class<? extends Exception>[] exception, String[] exceptionParam);
+    public abstract void onException(ProceedingJoinPoint point, Exception e, Class<? extends Exception>[] exception, String[] exceptionParam,Object o);
 
 }

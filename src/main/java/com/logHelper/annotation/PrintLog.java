@@ -53,6 +53,7 @@ public @interface PrintLog {
      */
     boolean printResult() default true;
 
+    String exceptionValue() default "";
     /**
      * 异常时执行
      *
