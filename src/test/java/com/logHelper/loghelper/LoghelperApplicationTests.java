@@ -1,7 +1,7 @@
 package com.loghelper.loghelper;
 
 
-import com.logHelper.annotation.PrintLog;
+import com.loghelper.annotation.PrintLog;
 
 import java.util.Arrays;
 import java.util.List;

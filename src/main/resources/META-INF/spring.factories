@@ -1,1 +1,1 @@
-org.springframework.boot.logHelper.EnableAutoConfiguration=com.logHelper.configuration.LogHelperConfiguration
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=com.loghelper.configuration.LogHelperAutoConfiguration
