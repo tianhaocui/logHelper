@@ -5,6 +5,7 @@
 
 # logHelper
 
+### 强烈建议使用2.1.0之后的版本
 
 ### 启动类添加@EnableLogHelper
 
@@ -40,7 +41,7 @@
          <dependency>
             <groupId>io.github.tianhaocui</groupId>
             <artifactId>loghelper-spring-boot-start</artifactId>
-            <version>2.0.6-pre</version>
+            <version>2.1.0-pre</version>
         </dependency>
 ```
 ```yaml
