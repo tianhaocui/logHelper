@@ -1,4 +1,4 @@
-package com.logHelper.util;
+package com.loghelper.util;
 
 import java.util.UUID;
 
@@ -13,6 +13,7 @@ public class TraceIdUtil {
      * @return traceId
      */
     public static String getTraceId() {
+
         return UUID.randomUUID().toString().replace("-", "") ;
     }
 }

@@ -1,4 +1,4 @@
-package com.logHelper.util;
+package com.loghelper.util;
 
 import java.lang.reflect.Field;
 import java.util.*;
@@ -6,7 +6,6 @@ import java.util.*;
 /**
  * 
  *  对象、属性处理
- * 
  * author: cuitianhao
  **/
 public class ObjUtils {
@@ -15,8 +14,8 @@ public class ObjUtils {
     /**
      * 获取包括所有的属性
      *
-     * @param objSource
-     * @return
+     * @param objSource 对象
+     * @return  属性
      */
     public static Field[] getAllFields(Object objSource) {
         //获得当前类的所有属性

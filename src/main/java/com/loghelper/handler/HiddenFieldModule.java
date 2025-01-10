@@ -1,4 +1,4 @@
-package com.logHelper.handler;
+package com.loghelper.handler;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.BeanDescription;
@@ -8,8 +8,8 @@ import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ser.BeanPropertyWriter;
 import com.fasterxml.jackson.databind.ser.BeanSerializerModifier;
-import com.logHelper.annotation.Hidden;
-import com.logHelper.util.HiddenBeanUtil;
+import com.loghelper.annotation.Hidden;
+import com.loghelper.util.HiddenBeanUtil;
 
 import java.io.IOException;
 import java.util.List;

@@ -1,6 +1,6 @@
-package com.logHelper.util;
+package com.loghelper.util;
 
-import com.logHelper.annotation.Hidden;
+import com.loghelper.annotation.Hidden;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 

@@ -1,7 +1,7 @@
-package com.logHelper.aop;
+package com.loghelper.aop;
 
-import com.logHelper.util.HttpUtil;
-import com.logHelper.util.LogUtil;
+import com.loghelper.util.HttpUtil;
+import com.loghelper.util.LogUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
@@ -20,10 +20,13 @@ import javax.servlet.http.HttpServletRequest;
 @Component
 @Aspect
 @Slf4j
-@Order(5)
+@Order()
 public class PrintCurlHandler {
 
-    @Before("@annotation(com.logHelper.annotation.PrintCurl)")
+    /**
+     * 打印日志
+     */
+    @Before("@annotation(com.loghelper.annotation.PrintCurl)")
     public void printLog() {
         try {
             ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
@@ -39,10 +42,7 @@ public class PrintCurlHandler {
 
     private void printCurlLog(HttpServletRequest request) {
         String curl = HttpUtil.getCurl(request);
-
-        if (curl != null) {
-            LogUtil.info("{}", curl);
-        }
+        LogUtil.info("{}", curl);
     }
 
 

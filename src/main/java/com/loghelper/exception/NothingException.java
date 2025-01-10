@@ -1,4 +1,4 @@
-package com.logHelper.exception;
+package com.loghelper.exception;
 
 /**
  * Description:

@@ -1,6 +1,6 @@
-package com.logHelper.util;
+package com.loghelper.util;
 
-import com.logHelper.handler.LogHelperTraceHandler;
+import com.loghelper.handler.LogHelperTraceHandler;
 import lombok.extern.slf4j.Slf4j;
 
 /**

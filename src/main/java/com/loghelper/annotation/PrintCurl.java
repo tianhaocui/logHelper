@@ -1,4 +1,4 @@
-package com.logHelper.annotation;
+package com.loghelper.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

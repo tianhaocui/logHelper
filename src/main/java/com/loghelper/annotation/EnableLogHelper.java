@@ -1,6 +1,6 @@
-package com.logHelper.annotation;
+package com.loghelper.annotation;
 
-import com.logHelper.configuration.LogHelperConfiguration;
+import com.loghelper.configuration.LogHelperConfiguration;
 import org.springframework.context.annotation.Import;
 
 import java.lang.annotation.*;

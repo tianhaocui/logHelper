@@ -1,77 +1,94 @@
-package com.logHelper.util;
+package com.loghelper.util;
 
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.util.FastByteArrayOutputStream;
+import org.springframework.http.*;
+import org.springframework.web.client.RestTemplate;
 
 //import jakarta.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequest;
-import java.io.FileInputStream;
+import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.*;
 
 /**
- * http util
+ * HTTP 工具类
  */
 public class HttpUtil {
     private static final String FORMAT_HEADER = "-H \"%1$s:%2$s\"";
     private static final String FORMAT_METHOD = "-X %1$s";
     private static final String FORMAT_BODY = "-d '%1$s'";
     private static final String FORMAT_URL = "\"%1$s\"";
-    private static final String CONTENT_TYPE = "Content-Type";
+    private static final RestTemplate restTemplate = new RestTemplate();
 
     /**
-     * 获取curl
+     * 发送 POST 请求
+     *
+     * @param url  URL
+     * @param body 请求体
+     * @return 响应内容
+     */
+    public static String post(String url, String body) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        HttpEntity<String> entity = new HttpEntity<>(body, headers);
+        ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.POST, entity, String.class);
+
+        return response.getBody();
+    }
+
+    /**
+     * 获取请求体
+     *
      * @param request 请求
-     * @return curl
+     * @return 请求体
+     */
+    public static String getBody(HttpServletRequest request) {
+        StringBuilder sb = new StringBuilder();
+        try (BufferedReader reader = request.getReader()) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                sb.append(line);
+            }
+        } catch (IOException e) {
+            return "";
+        }
+        return sb.toString();
+    }
+
+    /**
+     * 获取 curl 命令
+     *
+     * @param request 请求
+     * @return curl 命令
      */
     public static String getCurl(HttpServletRequest request) {
-        if (request == null) {
-            return null;
-        }
-        List<String> parts = new ArrayList<>();
-        parts.add("curl");
-        String url = request.getRequestURL().toString();
-        String method = request.getMethod();
-        String contentType = request.getContentType();
-        String queryString = request.getQueryString();
-        parts.add(String.format(FORMAT_METHOD, method.toUpperCase()));
+        StringBuilder curl = new StringBuilder("curl ");
 
-        Map<String, String> headers = new HashMap<>(16);
+        // 添加请求方法
+        curl.append(String.format(FORMAT_METHOD, request.getMethod())).append(" ");
+
+        // 添加请求头
         Enumeration<String> headerNames = request.getHeaderNames();
         while (headerNames.hasMoreElements()) {
-            String key = headerNames.nextElement();
-            headers.put(key, request.getHeader(key));
+            String headerName = headerNames.nextElement();
+            String headerValue = request.getHeader(headerName);
+            if (StringUtils.isNotEmpty(headerValue)) {
+                curl.append(String.format(FORMAT_HEADER, headerName, headerValue)).append(" ");
+            }
         }
-        headers.forEach((k, v) -> parts.add(String.format(FORMAT_HEADER, k, v)));
-        if (StringUtils.isNotEmpty(contentType) && !headers.containsKey(CONTENT_TYPE)) {
-            parts.add(String.format(FORMAT_HEADER, CONTENT_TYPE, contentType));
+
+        // 添加请求体
+        if ("POST".equalsIgnoreCase(request.getMethod())) {
+            String body = getBody(request);
+            if (StringUtils.isNotEmpty(body)) {
+                curl.append(String.format(FORMAT_BODY, body)).append(" ");
+            }
         }
-        if (StringUtils.isNotEmpty(queryString)) {
-            url = url+ "?"+queryString;
-        }
-        String body = null;
-        try {
-            FastByteArrayOutputStream fastByteArrayOutputStream = readUtf8(request.getInputStream());
-            body = new String(fastByteArrayOutputStream.toByteArray());
-        } catch (IOException ignore) {
-        }
-        if (StringUtils.isNotEmpty(body)) {
-            parts.add(String.format(FORMAT_BODY, body));
-        }
-        parts.add(String.format(FORMAT_URL, url));
-        return StringUtils.join(parts," " );
+
+        // 添加 URL
+        curl.append(String.format(FORMAT_URL, request.getRequestURL().toString()));
+
+        return curl.toString();
     }
-
-    private static FastByteArrayOutputStream readUtf8(InputStream in) throws IOException {
-        FastByteArrayOutputStream out;
-        if (in instanceof FileInputStream) {
-            out = new FastByteArrayOutputStream(in.available());
-        } else {
-            out = new FastByteArrayOutputStream();
-        }
-        return out;
-    }
-
-
 }
