@@ -11,7 +11,8 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class LogUtil {
     /**
-     *  获取logger
+     * 获取logger
+     *
      * @return log name
      */
     public static String getName() {
@@ -19,48 +20,53 @@ public class LogUtil {
     }
 
     /**
-     *  is trace enabled
+     * is trace enabled
      *
-     * @return  is trace enabled
+     * @return is trace enabled
      */
     public static boolean isTraceEnabled() {
         return log.isTraceEnabled();
     }
 
     /**
-     *  trace
+     * trace
      *
      * @param message message
      */
     public static void trace(String message) {
-        log.trace(LogHelperTraceHandler.getTraceLog() + message);
+        if (log.isTraceEnabled())
+            log.trace(LogHelperTraceHandler.getTraceLog() + message);
     }
+
     /**
-     *  trace
+     * trace
      *
      * @param format format
      * @param arg
      */
     public static void trace(String format, Object arg) {
-        log.trace(LogHelperTraceHandler.getTraceLog() + format, arg);
+        if (log.isTraceEnabled())
+            log.trace(LogHelperTraceHandler.getTraceLog() + format, arg);
     }
 
     /**
-     *
      * @param format format
-     * @param arg1 arg1
-     * @param arg2 arg2
+     * @param arg1   arg1
+     * @param arg2   arg2
      */
     public static void trace(String format, Object arg1, Object arg2) {
-        log.trace(LogHelperTraceHandler.getTraceLog() + format, arg1, arg2);
+        if (log.isTraceEnabled())
+            log.trace(LogHelperTraceHandler.getTraceLog() + format, arg1, arg2);
     }
 
     public static void trace(String format, Object... arguments) {
-        log.trace(LogHelperTraceHandler.getTraceLog() + format, arguments);
+        if (log.isTraceEnabled())
+            log.trace(LogHelperTraceHandler.getTraceLog() + format, arguments);
     }
 
     public static void trace(String msg, Throwable t) {
-        log.trace(LogHelperTraceHandler.getTraceLog() + msg, t);
+        if (log.isTraceEnabled())
+            log.trace(LogHelperTraceHandler.getTraceLog() + msg, t);
     }
 
     public static boolean isDebugEnabled() {
@@ -68,23 +74,28 @@ public class LogUtil {
     }
 
     public static void debug(String message) {
-        log.debug(LogHelperTraceHandler.getTraceLog() + message);
+        if (log.isDebugEnabled())
+            log.debug(LogHelperTraceHandler.getTraceLog() + message);
     }
 
     public static void debug(String format, Object arg) {
-        log.debug(LogHelperTraceHandler.getTraceLog() + format, arg);
+        if (log.isDebugEnabled())
+            log.debug(LogHelperTraceHandler.getTraceLog() + format, arg);
     }
 
     public static void debug(String format, Object arg1, Object arg2) {
-        log.debug(LogHelperTraceHandler.getTraceLog() + format, arg1, arg2);
+        if (log.isDebugEnabled())
+            log.debug(LogHelperTraceHandler.getTraceLog() + format, arg1, arg2);
     }
 
     public static void debug(String format, Object... arguments) {
-        log.debug(LogHelperTraceHandler.getTraceLog() + format, arguments);
+        if (log.isDebugEnabled())
+            log.debug(LogHelperTraceHandler.getTraceLog() + format, arguments);
     }
 
     public static void debug(String msg, Throwable t) {
-        log.debug(LogHelperTraceHandler.getTraceLog() + msg, t);
+        if (log.isDebugEnabled())
+            log.debug(LogHelperTraceHandler.getTraceLog() + msg, t);
     }
 
     public static boolean isInfoEnabled() {
