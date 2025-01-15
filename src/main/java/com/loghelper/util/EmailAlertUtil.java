@@ -34,7 +34,7 @@ public class EmailAlertUtil {
             StringUtils.isEmpty(emailAlert.getHost()) ||
             StringUtils.isEmpty(emailAlert.getUsername()) ||
             StringUtils.isEmpty(emailAlert.getTo())) {
-            log.debug("Email emailAlert is disabled or not properly configured");
+            LogUtil.debug("Email emailAlert is disabled or not properly configured");
             return;
         }
 
@@ -83,9 +83,9 @@ public class EmailAlertUtil {
 
             // 发送邮件
             mailSender.send(mimeMessage);
-            log.debug("Email emailAlert sent successfully");
+            LogUtil.debug("Email emailAlert sent successfully");
         } catch (Exception ex) {
-            log.error("Failed to send email emailAlert", ex);
+            LogUtil.error("Failed to send email emailAlert", ex);
         }
     }
 

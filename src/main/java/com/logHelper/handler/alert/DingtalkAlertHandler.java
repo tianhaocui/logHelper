@@ -1,23 +1,23 @@
 package com.loghelper.handler.alert;
 
 import com.loghelper.handler.OnExceptionHandler;
+import com.loghelper.util.DingtalkAlertUtil;
 import com.loghelper.util.JsonFormat;
-import com.loghelper.util.WeChatAlertUtil;
 import org.aspectj.lang.ProceedingJoinPoint;
 
 /**
- * 微信告警
+ * 钉钉告警
  */
-public class WechatAlertHandler extends OnExceptionHandler {
+public class DingtalkAlertHandler extends OnExceptionHandler {
 
     @Override
     public void onException(ProceedingJoinPoint point, Exception e, Class<? extends Exception>[] exception, String[] exceptionParam, Object o) {
         try {
             String title = point.getSignature().getName();
             String message = JsonFormat.format(point.getArgs());
-            WeChatAlertUtil.sendAlert(title, message, e);
+            DingtalkAlertUtil.sendAlert(title, message, e);
         } catch (Exception ex) {
-
+            // 忽略告警发送失败
         }
     }
-}
+} 

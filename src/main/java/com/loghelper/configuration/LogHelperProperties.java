@@ -40,6 +40,17 @@ public class LogHelperProperties {
          * 企业微信告警配置
          */
         private WechatAlert wechat = new WechatAlert();
+
+        /**
+         * 钉钉告警配置
+         */
+        private DingtalkAlert dingtalk = new DingtalkAlert();
+
+        /**
+         * 飞书告警配置
+         */
+        private FeishuAlert feishu = new FeishuAlert();
+
         /**
          * 包名前缀，多个用逗号分隔
          * 用于过滤日志、堆栈信息等
@@ -99,6 +110,31 @@ public class LogHelperProperties {
             private String cc;
         }
 
+        @Data
+        public static class DingtalkAlert {
+            /**
+             * 钉钉机器人 webhook 地址
+             */
+            private String webhook;
+
+            /**
+             * 加签密钥
+             */
+            private String secret;
+        }
+
+        @Data
+        public static class FeishuAlert {
+            /**
+             * 飞书机器人 webhook 地址
+             */
+            private String webhook;
+
+            /**
+             * 加签密钥
+             */
+            private String secret;
+        }
     }
 
     @Data

@@ -1,23 +1,23 @@
 package com.loghelper.handler.alert;
 
 import com.loghelper.handler.OnExceptionHandler;
+import com.loghelper.util.FeishuAlertUtil;
 import com.loghelper.util.JsonFormat;
-import com.loghelper.util.WeChatAlertUtil;
 import org.aspectj.lang.ProceedingJoinPoint;
 
 /**
- * 微信告警
+ * 飞书告警
  */
-public class WechatAlertHandler extends OnExceptionHandler {
+public class FeishuAlertHandler extends OnExceptionHandler {
 
     @Override
     public void onException(ProceedingJoinPoint point, Exception e, Class<? extends Exception>[] exception, String[] exceptionParam, Object o) {
         try {
             String title = point.getSignature().getName();
             String message = JsonFormat.format(point.getArgs());
-            WeChatAlertUtil.sendAlert(title, message, e);
+            FeishuAlertUtil.sendAlert(title, message, e);
         } catch (Exception ex) {
-
+            // 忽略告警发送失败
         }
     }
-}
+} 
