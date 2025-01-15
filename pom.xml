@@ -10,7 +10,7 @@
     </parent>
     <groupId>io.github.tianhaocui</groupId>
     <artifactId>loghelper-spring-boot-start</artifactId>
-    <version>2.1.0-java8</version>
+    <version>2.1.0-pre-java8</version>
     <name>log-helper</name>
 
     <licenses>
