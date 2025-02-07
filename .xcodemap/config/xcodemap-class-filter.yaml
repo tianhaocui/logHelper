@@ -1,10 +1,14 @@
 autoDetectedPackages:
 - com.loghelper.annotation
 - com.loghelper.aop
+- com.loghelper.bytemonitor
 - com.loghelper.configuration
+- com.loghelper.context
+- com.loghelper.exception
 - com.loghelper.handler
-- com.loghelper.util
 - com.loghelper.loghelper
+- com.loghelper.model
+- com.loghelper.util
 enableAutoDetect: true
 ignoreSameClassCall: null
 ignoreSamePackageCall: null
