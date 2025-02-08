@@ -35,15 +35,14 @@ import java.lang.reflect.Method;
 @Order(Integer.MAX_VALUE - 1)
 public class PrintLogHandler {
     private final ObjectMapper hiddenMapper = new ObjectMapper();
+    
+    private final LogHelperProperties properties;
 
-    private static final LogHelperProperties properties = LogHelperPropertiesUtil.getProperties();
-
-    {
-        //todo 支持自定义的序列化方式和自定义模块装载
+    public PrintLogHandler(LogHelperProperties properties) {
+        this.properties = properties;
         hiddenMapper.registerModule(new HiddenFieldModule());
         hiddenMapper.registerModule(new JavaTimeModule());
     }
-
 
     /**
      * 从切面打印 log
