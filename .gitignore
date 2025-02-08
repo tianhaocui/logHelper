@@ -34,3 +34,21 @@ build/
 
 ### VS Code ###
 .vscode/
+
+# Java
+*.class
+*.jar
+*.war
+*.ear
+
+# Logs
+logs/
+*.log
+
+# Env
+.env
+*.properties
+
+# Custom rules
+.cursorrules
+.cursorrules

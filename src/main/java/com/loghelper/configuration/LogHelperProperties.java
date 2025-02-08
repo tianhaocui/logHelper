@@ -28,7 +28,12 @@ public class LogHelperProperties {
      */
     private ThreadPool threadPool = new ThreadPool();
 
-@Data
+    /**
+     * 性能监控配置
+     */
+    private Performance performance = new Performance();
+
+    @Data
     public static class Alert {
 
         /**
@@ -158,5 +163,18 @@ public class LogHelperProperties {
          * 线程名前缀
          */
         private String threadNamePrefix = "LogHelper-Async-";
+    }
+
+    @Data
+    public static class Performance {
+        /**
+         * 是否启用性能监控
+         */
+        private boolean enabled = true;
+        
+        /**
+         * 慢方法阈值（毫秒）
+         */
+        private long threshold = 1000;
     }
 }
