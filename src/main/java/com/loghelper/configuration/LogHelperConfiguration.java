@@ -13,15 +13,16 @@ import org.springframework.context.annotation.PropertySource;
  */
 @Configuration
 @Import({
-    PrintLogHandler.class,
-    PrintCurlHandler.class,
-    SpringContextUtil.class,
-    PerformanceMonitorHandler.class,
-    ByteMonitorConfiguration.class
+        LogHelperProperties.class,
+        PrintLogHandler.class,
+        PrintCurlHandler.class,
+        SpringContextUtil.class,
+        PerformanceMonitorHandler.class,
+        ByteMonitorConfiguration.class
 })
 @PropertySource(
-    value = "classpath:loghelper.properties",
-    ignoreResourceNotFound = true
+        value = "classpath:loghelper.properties",
+        ignoreResourceNotFound = true
 )
 public class LogHelperConfiguration {
 }
