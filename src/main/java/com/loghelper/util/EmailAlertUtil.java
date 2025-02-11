@@ -7,7 +7,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
 
-import javax.mail.internet.MimeMessage;
+import jakarta.mail.internet.MimeMessage;
+//import javax.mail.internet.MimeMessage;
 import java.util.Arrays;
 import java.util.Properties;
 

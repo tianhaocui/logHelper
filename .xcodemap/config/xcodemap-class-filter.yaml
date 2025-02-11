@@ -6,7 +6,6 @@ autoDetectedPackages:
 - com.loghelper.context
 - com.loghelper.exception
 - com.loghelper.handler
-- com.loghelper.loghelper
 - com.loghelper.model
 - com.loghelper.util
 enableAutoDetect: true
