@@ -116,12 +116,7 @@ public class LogUtil {
 
     public static void info(String format, Object... arguments) {
         log.info(LogHelperTraceHandler.getTraceLog() + format, arguments);
-    }
-
-    public static void info(String msg, Throwable t) {
-        log.info(LogHelperTraceHandler.getTraceLog() + msg, t);
-    }
-
+    }    
     public static boolean isWarnEnabled() {
         return log.isWarnEnabled();
     }

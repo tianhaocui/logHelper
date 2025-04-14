@@ -17,15 +17,16 @@ import java.util.Map;
 @Slf4j
 @RequiredArgsConstructor
 public class WeChatAlertUtil {
+
     private static final ObjectMapper objectMapper = new ObjectMapper();
     private static final LogHelperProperties properties = SpringContextUtil.getBean(LogHelperProperties.class);
 
     /**
      * 发送告警消息
      *
-     * @param title   标题
+     * @param title 标题
      * @param message 消息内容
-     * @param e       异常
+     * @param e 异常
      */
     public static void sendAlert(String title, String message, Exception e) {
         LogHelperProperties.Alert alert = properties.getAlert();

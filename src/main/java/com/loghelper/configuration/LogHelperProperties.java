@@ -22,7 +22,6 @@ public class LogHelperProperties {
 
     private Alert alert = new Alert();
 
-
     /**
      * 线程池配置
      */
@@ -57,8 +56,7 @@ public class LogHelperProperties {
         private FeishuAlert feishu = new FeishuAlert();
 
         /**
-         * 包名前缀，多个用逗号分隔
-         * 用于过滤日志、堆栈信息等
+         * 包名前缀，多个用逗号分隔 用于过滤日志、堆栈信息等
          */
         private String packagePrefix = "";
 
@@ -117,6 +115,7 @@ public class LogHelperProperties {
 
         @Data
         public static class DingtalkAlert {
+
             /**
              * 钉钉机器人 webhook 地址
              */
@@ -130,6 +129,7 @@ public class LogHelperProperties {
 
         @Data
         public static class FeishuAlert {
+
             /**
              * 飞书机器人 webhook 地址
              */
@@ -144,6 +144,7 @@ public class LogHelperProperties {
 
     @Data
     public static class ThreadPool {
+
         /**
          * 核心线程数
          */
@@ -167,11 +168,12 @@ public class LogHelperProperties {
 
     @Data
     public static class Performance {
+
         /**
          * 是否启用性能监控
          */
         private boolean enabled = true;
-        
+
         /**
          * 慢方法阈值（毫秒）
          */
