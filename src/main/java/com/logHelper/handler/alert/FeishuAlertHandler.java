@@ -14,7 +14,7 @@ public class FeishuAlertHandler extends OnExceptionHandler {
     public void onException(ProceedingJoinPoint point, Exception e, Class<? extends Exception>[] exception, String[] exceptionParam, Object o) {
         try {
             String title = point.getSignature().getName();
-            String message = JsonFormat.format(point.getArgs());
+            String message = JsonFormat.formatArray(point.getArgs());
             FeishuAlertUtil.sendAlert(title, message, e);
         } catch (Exception ex) {
             // 忽略告警发送失败
